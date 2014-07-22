@@ -1,0 +1,20 @@
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="app_name">APL Keys</string>
+    <string name="apl_keys_ime_label">APL Keys IME</string>
+
+    <!-- Labels on soft keys -->
+    <string name="label_go_key">Go</string>
+    <string name="label_next_key">Next</string>
+    <string name="label_send_key">Send</string>
+
+    <!-- Labels for subtype -->
+    <string name="label_subtype_generic">%s</string>
+    <string name="label_subtype_en_GB">English (GB)</string>
+
+    <!-- Titles for ImePreference -->
+    <string name="apl_keys_ime_settings">APL Keys IME Settings</string>
+    <string name="language_selection_title">Input languages</string>
+    <string name="select_language">Select input languages</string>
+    <string name="general_category">General</string>
+
+</resources>

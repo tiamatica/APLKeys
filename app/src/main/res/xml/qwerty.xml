@@ -19,15 +19,14 @@
 -->
 
 <Keyboard xmlns:android="http://schemas.android.com/apk/res/android"
-    android:keyWidth="8.333333333%p"
+    android:keyWidth="10%p"
     android:horizontalGap="0px"
     android:verticalGap="0px"
     android:keyHeight="@dimen/key_height"
     >
 
     <Row>
-        <Key android:codes="96" android:keyLabel="`" android:keyEdgeFlags="left"/>
-        <Key android:codes="49" android:keyLabel="1"/>
+        <Key android:codes="49" android:keyLabel="1" android:keyEdgeFlags="left"/>
         <Key android:codes="50" android:keyLabel="2"/>
         <Key android:codes="51" android:keyLabel="3"/>
         <Key android:codes="52" android:keyLabel="4"/>
@@ -36,9 +35,7 @@
         <Key android:codes="55" android:keyLabel="7"/>
         <Key android:codes="56" android:keyLabel="8"/>
         <Key android:codes="57" android:keyLabel="9"/>
-        <Key android:codes="48" android:keyLabel="0"/>
-        <Key android:codes="45" android:keyLabel="-"/>
-        <Key android:codes="61" android:keyLabel="=" android:keyEdgeFlags="right"/>
+        <Key android:codes="48" android:keyLabel="0" android:keyEdgeFlags="right"/>
     </Row>
 
     <Row>

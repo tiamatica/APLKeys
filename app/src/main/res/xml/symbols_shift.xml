@@ -65,10 +65,13 @@
         <Key android:codes="8710" android:keyIcon="@drawable/cp_8710"/>
         <Key android:codes="9049" android:keyIcon="@drawable/cp_9049"/>
 
-        <Key android:codes="9014" android:keyIcon="@drawable/cp_9014" android:horizontalGap="2%p"/>
+        <Key android:codes="9014" android:keyIcon="@drawable/cp_9014"
+            android:horizontalGap="2%p"/>
         <Key android:codes="9067" android:keyIcon="@drawable/cp_9067"/>
         <Key android:codes="9080" android:keyIcon="@drawable/cp_9080"/>
         <Key android:codes="9061" android:keyIcon="@drawable/cp_9061"/>
+        <Key android:codes="40" android:keyLabel="("/>
+        <Key android:codes="41" android:keyLabel=")" android:keyEdgeFlags="right"/>
     </Row>
 
 
@@ -82,8 +85,10 @@
             <Key android:codes="8970" android:keyIcon="@drawable/cp_8970"/>
             <Key android:codes="8869" android:keyIcon="@drawable/cp_8869"/>
             <Key android:codes="8868" android:keyIcon="@drawable/cp_8868"/>
-            <Key android:codes="8867" android:keyIcon="@drawable/cp_8867"/>
-            <Key android:codes="8866" android:keyIcon="@drawable/cp_8866"/>
+        <Key android:codes="8867" android:keyIcon="@drawable/cp_8867"/>
+        <Key android:codes="8866" android:keyIcon="@drawable/cp_8866"/>
+        <Key android:codes="91" android:keyLabel="["/>
+        <Key android:codes="93" android:keyLabel="]"/>
 
         <Key android:codes="-5" android:keyIcon="@drawable/sym_keyboard_delete"
             android:keyWidth="15%p" android:keyEdgeFlags="right"

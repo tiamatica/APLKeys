@@ -13,6 +13,8 @@ import android.view.inputmethod.InputConnection;
 import android.view.inputmethod.InputMethodManager;
 import android.view.inputmethod.InputMethodSubtype;
 
+import uk.co.optimasystems.utils.TypefaceUtil;
+
 /**
  * Created by Gil on 21/07/2014.
  */
@@ -31,17 +33,17 @@ public class APLKeysIME extends InputMethodService
 
     private InputMethodManager mInputMethodManager;
 
-    private LatinKeyboardView mInputView;
+    private APLKeyboardView mInputView;
     private int mLastDisplayWidth;
     private boolean mCapsLock;
     private long mLastShiftTime;
     private long mMetaState;
 
-    private LatinKeyboard mSymbolsKeyboard;
-    private LatinKeyboard mSymbolsShiftedKeyboard;
-    private LatinKeyboard mQwertyKeyboard;
+    private APLKeyboard mSymbolsKeyboard;
+    private APLKeyboard mSymbolsShiftedKeyboard;
+    private APLKeyboard mQwertyKeyboard;
 
-    private LatinKeyboard mCurKeyboard;
+    private APLKeyboard mCurKeyboard;
 
 
     /**
@@ -51,6 +53,8 @@ public class APLKeysIME extends InputMethodService
     @Override public void onCreate() {
         super.onCreate();
         mInputMethodManager = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
+        TypefaceUtil.overrideFont(getApplicationContext(), "DEFAULT", "fonts/apl385.ttf");
+        TypefaceUtil.overrideFont(getApplicationContext(), "DEFAULT_BOLD", "fonts/apl385.ttf");
     }
     
     /**
@@ -66,9 +70,9 @@ public class APLKeysIME extends InputMethodService
             if (displayWidth == mLastDisplayWidth) return;
             mLastDisplayWidth = displayWidth;
         }
-        mQwertyKeyboard = new LatinKeyboard(this, R.xml.qwerty);
-        mSymbolsKeyboard = new LatinKeyboard(this, R.xml.symbols);
-        mSymbolsShiftedKeyboard = new LatinKeyboard(this, R.xml.symbols_shift);
+        mQwertyKeyboard = new APLKeyboard(this, R.xml.qwerty);
+        mSymbolsKeyboard = new APLKeyboard(this, R.xml.symbols);
+        mSymbolsShiftedKeyboard = new APLKeyboard(this, R.xml.symbols_shift);
     }
 
     /**
@@ -78,7 +82,7 @@ public class APLKeysIME extends InputMethodService
      * a configuration change.
      */
     @Override public View onCreateInputView() {
-        mInputView = (LatinKeyboardView) getLayoutInflater().inflate(
+        mInputView = (APLKeyboardView) getLayoutInflater().inflate(
                 R.layout.input, null);
         mInputView.setOnKeyboardActionListener(this);
         mInputView.setKeyboard(mQwertyKeyboard);
@@ -196,8 +200,12 @@ public class APLKeysIME extends InputMethodService
     }
 
     @Override
-    public void onCurrentInputMethodSubtypeChanged(InputMethodSubtype subtype) {
-        mInputView.setSubtypeOnSpaceKey(subtype);
+    /**
+     * Called when the subtype was changed.
+     * @param newSubtype the subtype which is being changed to.
+     */
+    public void onCurrentInputMethodSubtypeChanged(InputMethodSubtype newSubtype) {
+        mInputView.setSubtypeOnSpaceKey(newSubtype);
     }
 
     /**
@@ -257,31 +265,9 @@ public class APLKeysIME extends InputMethodService
                 return false;
 
             default:
-                // For all other keys, if we want to do transformations on
-                // text being entered with a hard keyboard, we need to process
-                // it and do the appropriate action.
-                if (PROCESS_HARD_KEYS) {
-                    if (keyCode == KeyEvent.KEYCODE_SPACE
-                            && (event.getMetaState()&KeyEvent.META_ALT_ON) != 0) {
-                        // A silly example: in our input method, Alt+Space
-                        // is a shortcut for 'android' in lower case.
-                        InputConnection ic = getCurrentInputConnection();
-                        if (ic != null) {
-                            // First, tell the editor that it is no longer in the
-                            // shift state, since we are consuming this.
-                            ic.clearMetaKeyStates(KeyEvent.META_ALT_ON);
-                            keyDownUp(KeyEvent.KEYCODE_A);
-                            keyDownUp(KeyEvent.KEYCODE_N);
-                            keyDownUp(KeyEvent.KEYCODE_D);
-                            keyDownUp(KeyEvent.KEYCODE_R);
-                            keyDownUp(KeyEvent.KEYCODE_O);
-                            keyDownUp(KeyEvent.KEYCODE_I);
-                            keyDownUp(KeyEvent.KEYCODE_D);
-                            // And we consume this event.
-                            return true;
-                        }
-                    }
-                }
+                // Do nothing.
+                break;
+
         }
 
         return super.onKeyDown(keyCode, event);
@@ -365,7 +351,7 @@ public class APLKeysIME extends InputMethodService
         } else if (primaryCode == Keyboard.KEYCODE_CANCEL) {
             handleClose();
             return;
-        } else if (primaryCode == LatinKeyboardView.KEYCODE_OPTIONS) {
+        } else if (primaryCode == APLKeyboardView.KEYCODE_OPTIONS) {
             // Show a menu or somethin'
         } else if (primaryCode == Keyboard.KEYCODE_MODE_CHANGE
                 && mInputView != null) {

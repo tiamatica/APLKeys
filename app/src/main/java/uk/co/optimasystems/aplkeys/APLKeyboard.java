@@ -8,18 +8,19 @@ import android.inputmethodservice.Keyboard;
 import android.view.inputmethod.EditorInfo;
 
 /**
+ * APL keyboard allows typing APL characters
  * Created by Gil on 21/07/2014.
  */
-public class LatinKeyboard extends Keyboard {
+public class APLKeyboard extends Keyboard {
     private Key mEnterKey;
     private Key mSpaceKey;
 
-    public LatinKeyboard(Context context, int xmlLayoutResId) {
+    public APLKeyboard(Context context, int xmlLayoutResId) {
         super(context, xmlLayoutResId);
     }
 
-    public LatinKeyboard(Context context, int layoutTemplateResId,
-                         CharSequence characters, int columns, int horizontalPadding) {
+    public APLKeyboard(Context context, int layoutTemplateResId,
+                       CharSequence characters, int columns, int horizontalPadding) {
         super(context, layoutTemplateResId, characters, columns, horizontalPadding);
     }
 

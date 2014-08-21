@@ -19,73 +19,82 @@
 -->
 
 <Keyboard xmlns:android="http://schemas.android.com/apk/res/android"
-    android:keyWidth="8%p"
+    android:keyWidth="10%p"
     android:horizontalGap="0px"
     android:verticalGap="0px"
-    android:keyHeight="@dimen/key_height"
+    android:keyHeight="50dip"
     >
 
-     <Row>
-        <Key android:codes="9075" android:keyLabel="⍳"/>
+    <Row >
+        <Key android:codes="9075" android:keyLabel="⍳"
+            android:keyEdgeFlags="left"/>
         <Key android:codes="9079" android:keyLabel="⍷"/>
         <Key android:codes="8746" android:keyLabel="∪"/>
         <Key android:codes="8745" android:keyLabel="∩"/>
         <Key android:codes="8714" android:keyLabel="∊"/>
         <Key android:codes="126" android:keyLabel="~"/>
 
-        <Key android:codes="44" android:keyLabel="," android:horizontalGap="4%p"/>
-        <Key android:codes="9066" android:keyLabel="⍪"/>
-        <Key android:codes="9076" android:keyLabel="⍴"/>
-        <Key android:codes="9021" android:keyLabel="⌽"/>
-        <Key android:codes="8854" android:keyLabel="⊖"/>
-        <Key android:codes="9033" android:keyLabel="⍉"/>
-    </Row>
-    <Row>
-        <Key android:codes="168" android:keyLabel="¨"/>
-        <Key android:codes="9064" android:keyLabel="⍨"/>
-        <Key android:codes="9059" android:keyLabel="⍣"/>
-        <Key android:codes="46" android:keyLabel="."/>
-        <Key android:codes="8728" android:keyLabel="∘"/>
-        <Key android:codes="9060" android:keyLabel="⍤"/>
-
-        <Key android:codes="9054" android:keyLabel="⍞" android:horizontalGap="4%p"/>
-        <Key android:codes="9109" android:keyLabel="⎕"/>
-        <Key android:codes="9056" android:keyLabel="⍠"/>
-        <Key android:codes="9016" android:keyLabel="⌸"/>
-        <Key android:codes="9038" android:keyLabel="⍎"/>
-        <Key android:codes="9045" android:keyLabel="⍕"/>
-    </Row>
-
-    <Row>
-        <Key android:codes="175" android:keyLabel="¯"/>
-        <Key android:codes="9068" android:keyLabel="⍬"/>
-
-        <Key android:codes="39" android:keyLabel="'" android:horizontalGap="2%p"/>
-        <Key android:codes="95" android:keyLabel="_"/>
-        <Key android:codes="8710" android:keyLabel="∆"/>
-        <Key android:codes="9049" android:keyLabel="⍙"/>
-
-        <Key android:codes="9014" android:keyLabel="⌶"
-            android:horizontalGap="2%p"/>
+        <Key android:codes="9014" android:keyLabel="⌶"/>
         <Key android:codes="9067" android:keyLabel="⍫"/>
         <Key android:codes="9080" android:keyLabel="⍸"/>
         <Key android:codes="9061" android:keyLabel="⍥"
             android:keyEdgeFlags="right"/>
     </Row>
 
+    <Row>
+        <Key android:codes="44" android:keyLabel=","
+            android:keyEdgeFlags="left"/>
+        <Key android:codes="9066" android:keyLabel="⍪"/>
+        <Key android:codes="9076" android:keyLabel="⍴"/>
+        <Key android:codes="9021" android:keyLabel="⌽"/>
+        <Key android:codes="8854" android:keyLabel="⊖"/>
+        <Key android:codes="9033" android:keyLabel="⍉"/>
+
+        <Key android:codes="47" android:keyLabel="/" />
+        <Key android:codes="9023" android:keyLabel="⌿" />
+        <Key android:codes="92" android:keyLabel="\\" />
+        <Key android:codes="9024" android:keyLabel="⍀"
+            android:keyEdgeFlags="right"/>
+    </Row>
 
     <Row>
+        <Key android:codes="168" android:keyLabel="¨"
+            android:keyEdgeFlags="left"/>
+        <Key android:codes="9064" android:keyLabel="⍨"/>
+        <Key android:codes="9059" android:keyLabel="⍣"/>
+        <Key android:codes="46" android:keyLabel="."/>
+        <Key android:codes="8728" android:keyLabel="∘"/>
+        <Key android:codes="9060" android:keyLabel="⍤"/>
 
-        <Key android:codes="124" android:keyLabel="|"/>
-        <Key android:codes="8968" android:keyLabel="⌈"/>
-        <Key android:codes="8970" android:keyLabel="⌊"/>
         <Key android:codes="8869" android:keyLabel="⊥"/>
         <Key android:codes="8868" android:keyLabel="⊤"/>
         <Key android:codes="8867" android:keyLabel="⊣"/>
         <Key android:codes="8866" android:keyLabel="⊢"
             android:keyEdgeFlags="right"/>
+    </Row>
+
+
+    <Row>
+        <Key android:codes="9054" android:keyLabel="⍞"
+            android:keyEdgeFlags="left"/>
+        <Key android:codes="9109" android:keyLabel="⎕"/>
+        <Key android:codes="9056" android:keyLabel="⍠"/>
+        <Key android:codes="9016" android:keyLabel="⌸"/>
+        <Key android:codes="9038" android:keyLabel="⍎"/>
+        <Key android:codes="9045" android:keyLabel="⍕"/>
+
+        <Key android:codes="39" android:keyLabel="'"/>
+
+        <Key android:codes="124" android:keyLabel="|"/>
+        <Key android:codes="8968" android:keyLabel="⌈"/>
+        <Key android:codes="8970" android:keyLabel="⌊"/>
 
     </Row>
+
+    <!--
+            <Key android:codes="95" android:keyLabel="_"/>
+            <Key android:codes="9049" android:keyLabel="⍙"/>
+    -->
 
     <Row android:rowEdgeFlags="bottom">
         <Key android:codes="-1" android:keyIcon="@drawable/sym_keyboard_shift"

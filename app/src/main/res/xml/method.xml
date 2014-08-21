@@ -21,7 +21,7 @@
 <!-- for the Search Manager. -->
 
 <input-method xmlns:android="http://schemas.android.com/apk/res/android"
-        android:settingsActivity="uk.co.optimasystems.aplkeys.APLKeysIMESettings"
+        android:settingsActivity="com.athoraya.aplkeys.APLKeysIMESettings"
     >
     <subtype
         android:label="@string/label_subtype_en_GB"

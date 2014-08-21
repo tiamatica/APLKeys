@@ -1,11 +1,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="uk.co.optimasystems.aplkeys">
+    package="com.athoraya.aplkeys">
 
     <application android:allowBackup="true"
         android:label="@string/app_name"
-        android:icon="@drawable/ic_launcher"
+        android:icon="@drawable/ic_aplkeys"
         android:theme="@style/AppTheme">
-        <service android:name="APLKeysIME"
+        <service android:name=".APLKeysIME"
             android:label="@string/apl_keys_ime_label"
             android:permission="android.permission.BIND_INPUT_METHOD">
             <intent-filter>
@@ -14,7 +14,7 @@
             <meta-data android:name="android.view.im" android:resource="@xml/method"/>
         </service>
 
-        <activity android:name="APLKeysIMESettings"
+        <activity android:name=".APLKeysIMESettings"
             android:label="@string/apl_keys_ime_settings">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>

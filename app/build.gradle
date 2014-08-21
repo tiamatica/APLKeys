@@ -5,7 +5,7 @@ android {
     buildToolsVersion "20.0.0"
 
     defaultConfig {
-        applicationId "uk.co.optimasystems.aplkeys"
+        applicationId "com.athoraya.aplkeys"
         minSdkVersion 16
         targetSdkVersion 20
         versionCode 1

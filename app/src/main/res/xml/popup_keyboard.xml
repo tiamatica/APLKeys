@@ -22,6 +22,6 @@
     android:keyWidth="15%p"
     android:horizontalGap="0px"
     android:verticalGap="0px"
-    android:keyHeight="@dimen/key_height"
+    android:keyHeight="@dimen/key_height_4_rows"
     >
 </Keyboard>

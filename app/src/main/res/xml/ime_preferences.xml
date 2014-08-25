@@ -16,4 +16,9 @@
 
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
         android:title="@string/apl_keys_ime_settings">
+    <CheckBoxPreference
+        android:key="pref_full_qwerty"
+        android:title="@string/pref_full_qwerty"
+        android:summary="@string/pref_full_qwerty_summ"
+        android:defaultValue="true" />
 </PreferenceScreen>

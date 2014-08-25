@@ -1,8 +1,13 @@
 package com.athoraya.aplkeys;
 
+import android.app.ActivityOptions;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.inputmethodservice.InputMethodService;
 import android.inputmethodservice.Keyboard;
 import android.inputmethodservice.KeyboardView;
+import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.text.InputType;
 import android.text.method.MetaKeyKeyListener;
 import android.view.KeyCharacterMap;
@@ -21,30 +26,34 @@ import com.athoraya.utils.TypefaceUtil;
 public class APLKeysIME extends InputMethodService 
         implements KeyboardView.OnKeyboardActionListener {
 
-    /**
-     * This boolean indicates the optional example code for performing
-     * processing of hard keys in addition to regular text generation
-     * from on-screen interaction.  It would be used for input methods that
-     * perform language translations (such as converting text entered on
-     * a QWERTY keyboard to Chinese), but may not be used for input methods
-     * that are primarily intended to be used for on-screen text entry.
-     */
-    static final boolean PROCESS_HARD_KEYS = true;
-
     private InputMethodManager mInputMethodManager;
 
     private APLKeyboardView mInputView;
     private int mLastDisplayWidth;
     private boolean mCapsLock;
     private long mLastShiftTime;
-    private long mMetaState;
 
-    private APLKeyboard mSymbolsKeyboard;
-    private APLKeyboard mSymbolsShiftedKeyboard;
     private APLKeyboard mQwertyKeyboard;
+    private APLKeyboard mSymbolsKeyboard;
+    private APLKeyboard mSymbolsPhoneKeyboard;
+    private APLKeyboard mAPLKeyboardPage1;
+    private APLKeyboard mAPLKeyboardPage2;
 
     private APLKeyboard mCurKeyboard;
 
+    private Boolean mFullQwerty;
+    private Boolean mPrefsChanged;
+
+    private static final String KEY_PREF_FULL_QWERTY = "pref_full_qwerty";
+
+    private SharedPreferences mPrefs;
+    SharedPreferences.OnSharedPreferenceChangeListener mPrefsListener =
+            new SharedPreferences.OnSharedPreferenceChangeListener(){
+                @Override
+                public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+                    mPrefsChanged = true;
+                }
+            };
 
     /**
      * Main initialization of the input method component.  Be sure to call
@@ -53,26 +62,57 @@ public class APLKeysIME extends InputMethodService
     @Override public void onCreate() {
         super.onCreate();
         mInputMethodManager = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
-        TypefaceUtil.overrideFont(getApplicationContext(), "DEFAULT", "fonts/apl385.ttf");
-        TypefaceUtil.overrideFont(getApplicationContext(), "DEFAULT_BOLD", "fonts/apl385.ttf");
+
+        PreferenceManager.setDefaultValues(this, R.xml.ime_preferences, false);
+        mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        mPrefs.registerOnSharedPreferenceChangeListener(mPrefsListener);
+        loadPrefs();
+
+        TypefaceUtil.overrideFont(getApplicationContext(), "DEFAULT", "fonts/apl385.otf");
+        TypefaceUtil.overrideFont(getApplicationContext(), "DEFAULT_BOLD", "fonts/apl385.otf");
     }
-    
+
+    @Override public void onDestroy(){
+        super.onDestroy();
+        mPrefs.unregisterOnSharedPreferenceChangeListener(mPrefsListener);
+    }
+
+    private void loadPrefs() {
+        mFullQwerty = mPrefs.getBoolean(KEY_PREF_FULL_QWERTY, true);
+        mPrefsChanged = false;
+    }
+
     /**
      * This is the point where you can do all of your UI initialization.  It
      * is called after creation and any configuration change.
      */
     @Override public void onInitializeInterface() {
+        Boolean hasChanged =  mPrefsChanged;
+        loadPrefs();
+        int displayWidth = getMaxWidth();
+        hasChanged = hasChanged || displayWidth != mLastDisplayWidth;
+        mLastDisplayWidth = displayWidth;
+        if (!hasChanged) return;
+        /*
         if (mQwertyKeyboard != null) {
             // Configuration changes can happen after the keyboard gets recreated,
             // so we need to be able to re-build the keyboards if the available
             // space has changed.
-            int displayWidth = getMaxWidth();
             if (displayWidth == mLastDisplayWidth) return;
             mLastDisplayWidth = displayWidth;
+        } else {
+            mLastDisplayWidth = displayWidth;
         }
-        mQwertyKeyboard = new APLKeyboard(this, R.xml.qwerty);
+        */
+        if (mLastDisplayWidth < 600 && mFullQwerty == false) {
+            mQwertyKeyboard = new APLKeyboard(this, R.xml.qwerty_reduced);
+        } else {
+            mQwertyKeyboard = new APLKeyboard(this, R.xml.qwerty);
+        }
         mSymbolsKeyboard = new APLKeyboard(this, R.xml.symbols);
-        mSymbolsShiftedKeyboard = new APLKeyboard(this, R.xml.symbols_shift);
+        mSymbolsPhoneKeyboard = new APLKeyboard(this, R.xml.symbols_phone);
+        mAPLKeyboardPage1 = new APLKeyboard(this, R.xml.apl_chars_page1);
+        mAPLKeyboardPage2 = new APLKeyboard(this, R.xml.apl_chars_page2);
     }
 
     /**
@@ -98,12 +138,8 @@ public class APLKeysIME extends InputMethodService
     @Override public void onStartInput(EditorInfo attribute, boolean restarting) {
         super.onStartInput(attribute, restarting);
 
-        // Reset our state.  We want to do this even if restarting, because
-        // the underlying state of the text editor could have changed in any way.
-
-        if (!restarting) {
-            // Clear shift states.
-            mMetaState = 0;
+        if (mPrefsChanged){
+            onInitializeInterface();
         }
 
         // We are now going to initialize our state based on the type of
@@ -117,9 +153,9 @@ public class APLKeysIME extends InputMethodService
                 break;
 
             case InputType.TYPE_CLASS_PHONE:
-                // Phones will also default to the symbols keyboard, though
+                // Phones will also default to the apl_chars_page1 keyboard, though
                 // often you will want to have a dedicated phone keyboard.
-                mCurKeyboard = mSymbolsKeyboard;
+                mCurKeyboard = mSymbolsPhoneKeyboard;
                 break;
 
             case InputType.TYPE_CLASS_TEXT:
@@ -128,30 +164,6 @@ public class APLKeysIME extends InputMethodService
                 // be doing predictive text (showing candidates as the
                 // user types).
                 mCurKeyboard = mQwertyKeyboard;
-
-                // We now look for a few special variations of text that will
-                // modify our behavior.
-                int variation = attribute.inputType & InputType.TYPE_MASK_VARIATION;
-                if (variation == InputType.TYPE_TEXT_VARIATION_PASSWORD ||
-                        variation == InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD) {
-                    // Do not display predictions / what the user is typing
-                    // when they are entering a password.
-                }
-
-                if (variation == InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS
-                        || variation == InputType.TYPE_TEXT_VARIATION_URI
-                        || variation == InputType.TYPE_TEXT_VARIATION_FILTER) {
-                    // Our predictions are not useful for e-mail addresses
-                    // or URIs.
-                }
-
-                if ((attribute.inputType & InputType.TYPE_TEXT_FLAG_AUTO_COMPLETE) != 0) {
-                    // If this is an auto-complete text view, then our predictions
-                    // will not be shown and instead we will allow the editor
-                    // to supply their own.  We only show the editor's
-                    // candidates when in fullscreen mode, otherwise relying
-                    // own it displaying its own UI.
-                }
 
                 // We also want to look at the current state of the editor
                 // to decide whether our alphabetic keyboard should start out
@@ -206,33 +218,6 @@ public class APLKeysIME extends InputMethodService
      */
     public void onCurrentInputMethodSubtypeChanged(InputMethodSubtype newSubtype) {
         mInputView.setSubtypeOnSpaceKey(newSubtype);
-    }
-
-    /**
-     * This translates incoming hard key events in to edit operations on an
-     * InputConnection.  It is only needed when using the
-     * PROCESS_HARD_KEYS option.
-     */
-    private boolean translateKeyDown(int keyCode, KeyEvent event) {
-        mMetaState = MetaKeyKeyListener.handleKeyDown(mMetaState,
-                keyCode, event);
-        int c = event.getUnicodeChar(MetaKeyKeyListener.getMetaState(mMetaState));
-        mMetaState = MetaKeyKeyListener.adjustMetaAfterKeypress(mMetaState);
-        InputConnection ic = getCurrentInputConnection();
-        if (c == 0 || ic == null) {
-            return false;
-        }
-
-        boolean dead = false;
-
-        if ((c & KeyCharacterMap.COMBINING_ACCENT) != 0) {
-            dead = true;
-            c = c & KeyCharacterMap.COMBINING_ACCENT_MASK;
-        }
-
-        onKey(c, null);
-
-        return true;
     }
 
     /**
@@ -352,16 +337,66 @@ public class APLKeysIME extends InputMethodService
             handleClose();
             return;
         } else if (primaryCode == APLKeyboardView.KEYCODE_OPTIONS) {
-            // Show a menu or somethin'
-        } else if (primaryCode == Keyboard.KEYCODE_MODE_CHANGE
-                && mInputView != null) {
-            Keyboard current = mInputView.getKeyboard();
-            current = (current == mQwertyKeyboard) ? mSymbolsKeyboard :
-                        (current == mSymbolsKeyboard) ? mSymbolsShiftedKeyboard : mQwertyKeyboard;
-            mInputView.setKeyboard(current);
+            Intent intent = new Intent(this, APLKeysIMESettings.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                    | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED
+                    | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+        } else if (primaryCode == Keyboard.KEYCODE_ALT) {
+            handleAlt();
+        } else if (primaryCode == Keyboard.KEYCODE_MODE_CHANGE) {
+            handleMode();
+        } else if (primaryCode == '\n') {
+            if (mCurKeyboard.mEnterAction == EditorInfo.IME_NULL ||
+                mCurKeyboard.mEnterAction == EditorInfo.IME_ACTION_NONE ||
+                (mCurKeyboard.mEnterAction & EditorInfo.IME_FLAG_NO_ENTER_ACTION) == EditorInfo.IME_FLAG_NO_ENTER_ACTION) {
+                handleCharacter(primaryCode);
+            } else {
+                getCurrentInputConnection().performEditorAction(getCurrentInputEditorInfo().actionId);
+            }
         } else {
-            handleCharacter(primaryCode, keyCodes);
+            handleCharacter(primaryCode);
         }
+    }
+
+    private void handleMode() {
+        if (mInputView == null) {
+            return;
+        }
+
+        Keyboard current = mInputView.getKeyboard();
+        if (current == mQwertyKeyboard) {
+            mCurKeyboard = mSymbolsKeyboard;
+        } else if (current == mAPLKeyboardPage1) {
+            mCurKeyboard = mSymbolsKeyboard;
+        } else if (current == mAPLKeyboardPage2) {
+            mCurKeyboard = mSymbolsKeyboard;
+        } else if (current == mSymbolsKeyboard) {
+            mCurKeyboard = mQwertyKeyboard;
+        } else if (current == mSymbolsPhoneKeyboard) {
+            mCurKeyboard = mQwertyKeyboard;
+        }
+        mInputView.setKeyboard(mCurKeyboard);
+    }
+
+    private void handleAlt() {
+        if (mInputView == null) {
+            return;
+        }
+
+        Keyboard current = mInputView.getKeyboard();
+        if (current == mQwertyKeyboard) {
+            mCurKeyboard = mAPLKeyboardPage1;
+        } else if (current == mAPLKeyboardPage1) {
+            mCurKeyboard = mQwertyKeyboard;
+        } else if (current == mAPLKeyboardPage2) {
+            mCurKeyboard = mQwertyKeyboard;
+        } else if (current == mSymbolsKeyboard) {
+            mCurKeyboard = mAPLKeyboardPage1;
+        } else if (current == mSymbolsPhoneKeyboard) {
+            mCurKeyboard = mAPLKeyboardPage1;
+        }
+        mInputView.setKeyboard(mCurKeyboard);
     }
 
     public void onText(CharSequence text) {
@@ -373,7 +408,6 @@ public class APLKeysIME extends InputMethodService
         updateShiftKeyState(getCurrentInputEditorInfo());
     }
 
-
     private void handleBackspace() {
         keyDownUp(KeyEvent.KEYCODE_DEL);
         updateShiftKeyState(getCurrentInputEditorInfo());
@@ -384,28 +418,27 @@ public class APLKeysIME extends InputMethodService
             return;
         }
 
+        Keyboard current = mInputView.getKeyboard();
 
-        Keyboard currentKeyboard = mInputView.getKeyboard();
-        if (mQwertyKeyboard == currentKeyboard) {
+        if (current == mQwertyKeyboard) {
             // Alphabet keyboard
             checkToggleCapsLock();
             mInputView.setShifted(mCapsLock || !mInputView.isShifted());
+            return;
+        } else if (current == mAPLKeyboardPage1) {
+            mCurKeyboard = mAPLKeyboardPage2;
+        } else if (current == mAPLKeyboardPage2) {
+            mCurKeyboard = mAPLKeyboardPage1;
+        } else if (current == mSymbolsKeyboard) {
+            mCurKeyboard = mSymbolsPhoneKeyboard;
+        } else if (current == mSymbolsPhoneKeyboard) {
+            mCurKeyboard = mSymbolsKeyboard;
         }
-        /*
-        else if (currentKeyboard == mSymbolsKeyboard) {
-            mSymbolsKeyboard.setShifted(true);
-            mInputView.setKeyboard(mSymbolsShiftedKeyboard);
-            mSymbolsShiftedKeyboard.setShifted(true);
-        } else if (currentKeyboard == mSymbolsShiftedKeyboard) {
-            mSymbolsShiftedKeyboard.setShifted(false);
-            mInputView.setKeyboard(mSymbolsKeyboard);
-            mSymbolsKeyboard.setShifted(false);
-        }
-         */
+        mInputView.setKeyboard(mCurKeyboard);
 
     }
 
-    private void handleCharacter(int primaryCode, int[] keyCodes) {
+    private void handleCharacter(int primaryCode) {
         if (isInputViewShown()) {
             if (mInputView.isShifted()) {
                 primaryCode = Character.toUpperCase(primaryCode);
@@ -448,4 +481,5 @@ public class APLKeysIME extends InputMethodService
 
     public void onRelease(int primaryCode) {
     }
+
 }

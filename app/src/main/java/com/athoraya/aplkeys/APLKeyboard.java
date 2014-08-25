@@ -16,6 +16,7 @@ import com.athoraya.aplkeys.R;
 public class APLKeyboard extends Keyboard {
     private Key mEnterKey;
     private Key mSpaceKey;
+    public int mEnterAction;
 
     public APLKeyboard(Context context, int xmlLayoutResId) {
         super(context, xmlLayoutResId);
@@ -47,7 +48,14 @@ public class APLKeyboard extends Keyboard {
             return;
         }
 
-        switch (options&(EditorInfo.IME_MASK_ACTION|EditorInfo.IME_FLAG_NO_ENTER_ACTION)) {
+        mEnterAction = options&(EditorInfo.IME_MASK_ACTION|EditorInfo.IME_FLAG_NO_ENTER_ACTION);
+
+        switch (mEnterAction) {
+            case EditorInfo.IME_ACTION_DONE:
+                mEnterKey.iconPreview = null;
+                mEnterKey.icon = null;
+                mEnterKey.label = res.getText(R.string.label_done_key);
+                break;
             case EditorInfo.IME_ACTION_GO:
                 mEnterKey.iconPreview = null;
                 mEnterKey.icon = null;
@@ -57,6 +65,11 @@ public class APLKeyboard extends Keyboard {
                 mEnterKey.iconPreview = null;
                 mEnterKey.icon = null;
                 mEnterKey.label = res.getText(R.string.label_next_key);
+                break;
+            case EditorInfo.IME_ACTION_PREVIOUS:
+                mEnterKey.iconPreview = null;
+                mEnterKey.icon = null;
+                mEnterKey.label = res.getText(R.string.label_prev_key);
                 break;
             case EditorInfo.IME_ACTION_SEARCH:
                 mEnterKey.icon = res.getDrawable(R.drawable.sym_keyboard_search);

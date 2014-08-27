@@ -86,11 +86,16 @@ public class APLKeyboardView extends KeyboardView {
 
             CharSequence otherChars = key.popupCharacters;
             String label = otherChars != null && otherChars.length() > 1 ? String.valueOf(otherChars.charAt(1)) : null;
-            if (key.codes[0] == 32){
-                label = "Settings";
-            }
 
-            if (label != null) {
+            if (key.codes[0] == 32){    // draw text bottom right
+                label = "\u2026";
+                canvas.translate(key.x + kbdPaddingLeft, key.y + kbdPaddingTop);
+                canvas.drawText(label,
+                        key.width - padding.right,
+                        key.height - padding.bottom,
+                        paint);
+                canvas.translate(-key.x - kbdPaddingLeft, -key.y - kbdPaddingTop);
+            } else  if (label != null) {    // draw text top right
                 // Draw the text
                 canvas.translate(key.x + kbdPaddingLeft, key.y + kbdPaddingTop);
                 canvas.drawText(label,

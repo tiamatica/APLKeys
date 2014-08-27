@@ -153,8 +153,6 @@ public class APLKeysIME extends InputMethodService
                 break;
 
             case InputType.TYPE_CLASS_PHONE:
-                // Phones will also default to the apl_chars_page1 keyboard, though
-                // often you will want to have a dedicated phone keyboard.
                 mCurKeyboard = mSymbolsPhoneKeyboard;
                 break;
 
@@ -164,6 +162,14 @@ public class APLKeysIME extends InputMethodService
                 // be doing predictive text (showing candidates as the
                 // user types).
                 mCurKeyboard = mQwertyKeyboard;
+                int variation = attribute.inputType & InputType.TYPE_MASK_VARIATION;
+                if (variation == InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS
+                        || variation == InputType.TYPE_TEXT_VARIATION_URI
+                        || variation == InputType.TYPE_TEXT_VARIATION_FILTER) {
+                    // Our predictions are not useful for e-mail addresses
+                    // or URIs.
+                    // mPredictionOn = false;
+                }
 
                 // We also want to look at the current state of the editor
                 // to decide whether our alphabetic keyboard should start out
@@ -439,13 +445,12 @@ public class APLKeysIME extends InputMethodService
     }
 
     private void handleCharacter(int primaryCode) {
-        if (isInputViewShown()) {
-            if (mInputView.isShifted()) {
-                primaryCode = Character.toUpperCase(primaryCode);
-            }
+        if (isInputViewShown() && mInputView.isShifted()) {
+            primaryCode = Character.toUpperCase(primaryCode);
         }
         getCurrentInputConnection().commitText(
             String.valueOf((char) primaryCode), 1);
+        updateShiftKeyState(getCurrentInputEditorInfo());
     }
 
     private void handleClose() {
@@ -455,9 +460,11 @@ public class APLKeysIME extends InputMethodService
 
     private void checkToggleCapsLock() {
         long now = System.currentTimeMillis();
-        if (mLastShiftTime + 800 > now) {
+        if (mCapsLock || mLastShiftTime + 800 > now) {
             mCapsLock = !mCapsLock;
             mLastShiftTime = 0;
+            mQwertyKeyboard.setShiftIcon(getResources(),mCapsLock);
+            mInputView.invalidateAllKeys();
         } else {
             mLastShiftTime = now;
         }

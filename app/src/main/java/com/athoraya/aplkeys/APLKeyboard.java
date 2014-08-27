@@ -5,6 +5,7 @@ import android.content.res.Resources;
 import android.content.res.XmlResourceParser;
 import android.graphics.drawable.Drawable;
 import android.inputmethodservice.Keyboard;
+import android.view.KeyEvent;
 import android.view.inputmethod.EditorInfo;
 
 import com.athoraya.aplkeys.R;
@@ -16,6 +17,7 @@ import com.athoraya.aplkeys.R;
 public class APLKeyboard extends Keyboard {
     private Key mEnterKey;
     private Key mSpaceKey;
+    private Key mShiftKey;
     public int mEnterAction;
 
     public APLKeyboard(Context context, int xmlLayoutResId) {
@@ -35,6 +37,8 @@ public class APLKeyboard extends Keyboard {
             mEnterKey = key;
         } else if (key.codes[0] == ' ') {
             mSpaceKey = key;
+        } else if (key.codes[0] == KEYCODE_SHIFT) {
+            mShiftKey = key;
         }
         return key;
     }
@@ -91,6 +95,12 @@ public class APLKeyboard extends Keyboard {
         if (mSpaceKey != null) {
             mSpaceKey.icon = icon;
         }
+    }
+
+    public void setShiftIcon(Resources res, Boolean capsLock) {
+        mShiftKey.icon = res.getDrawable(capsLock ? R.drawable.sym_keyboard_shift_locked : R.drawable.sym_keyboard_shift);
+        mShiftKey.iconPreview = res.getDrawable(capsLock ? R.drawable.sym_keyboard_feedback_shift_locked : R.drawable.sym_keyboard_feedback_shift);
+
     }
 
     static class LatinKey extends Keyboard.Key {

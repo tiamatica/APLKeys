@@ -19,7 +19,7 @@
 -->
 
 <Keyboard xmlns:android="http://schemas.android.com/apk/res/android"
-    android:keyWidth="10%p"
+    android:keyWidth="9%p"
     android:horizontalGap="0px"
     android:verticalGap="0px"
     android:keyHeight="@dimen/key_height_5_rows"
@@ -34,7 +34,9 @@
         <Key android:codes="8714" android:keyLabel="∊"/>
         <Key android:codes="126" android:keyLabel="~"/>
 
-        <Key android:codes="9014" android:keyLabel="⌶"/>
+        <Key android:codes="9014" android:keyLabel="⌶"
+            android:horizontalGap="10%"
+            />
         <Key android:codes="9067" android:keyLabel="⍫"/>
         <Key android:codes="9080" android:keyLabel="⍸"/>
         <Key android:codes="9061" android:keyLabel="⍥"
@@ -50,9 +52,11 @@
         <Key android:codes="8854" android:keyLabel="⊖"/>
         <Key android:codes="9033" android:keyLabel="⍉"/>
 
-        <Key android:codes="47" android:keyLabel="/" />
-        <Key android:codes="9023" android:keyLabel="⌿" />
+        <Key android:codes="47" android:keyLabel="/"
+            android:horizontalGap="10%"
+            />
         <Key android:codes="92" android:keyLabel="\\" />
+        <Key android:codes="9023" android:keyLabel="⌿" />
         <Key android:codes="9024" android:keyLabel="⍀"
             android:keyEdgeFlags="right"/>
     </Row>
@@ -66,7 +70,9 @@
         <Key android:codes="8728" android:keyLabel="∘"/>
         <Key android:codes="9060" android:keyLabel="⍤"/>
 
-        <Key android:codes="8869" android:keyLabel="⊥"/>
+        <Key android:codes="8869" android:keyLabel="⊥"
+            android:horizontalGap="10%"
+            />
         <Key android:codes="8868" android:keyLabel="⊤"/>
         <Key android:codes="8867" android:keyLabel="⊣"/>
         <Key android:codes="8866" android:keyLabel="⊢"
@@ -83,9 +89,13 @@
         <Key android:codes="9038" android:keyLabel="⍎"/>
         <Key android:codes="9045" android:keyLabel="⍕"/>
 
-        <Key android:codes="39" android:keyLabel="'"/>
+        <Key android:codes="39" android:keyLabel="'"
+            android:horizontalGap="5%"
+            />
 
-        <Key android:codes="124" android:keyLabel="|"/>
+        <Key android:codes="124" android:keyLabel="|"
+            android:horizontalGap="5%"
+            />
         <Key android:codes="8968" android:keyLabel="⌈"/>
         <Key android:codes="8970" android:keyLabel="⌊"/>
 
@@ -102,11 +112,24 @@
             android:keyEdgeFlags="left"/>
         <Key android:codes="-2" android:keyLabel="123" android:keyWidth="15%p" />
         <Key android:codes="-6" android:keyLabel="ABC" android:keyWidth="15%p"/>
-        <Key android:codes="32" android:keyIcon="@drawable/sym_keyboard_space" android:keyWidth="25%p"
-                android:isRepeatable="true"/>
-        <Key android:codes="-5" android:keyIcon="@drawable/sym_keyboard_delete"
-            android:keyWidth="15%p"/>
-        <Key android:codes="10" android:keyIcon="@drawable/sym_keyboard_return"
-                android:keyWidth="15%p" android:keyEdgeFlags="right" />
+        <Key android:codes="32"
+            android:keyIcon="@drawable/sym_keyboard_space"
+            android:iconPreview="@drawable/sym_keyboard_feedback_space"
+            android:keyWidth="25%p"
+            android:isRepeatable="true"
+            />
+        <Key android:codes="-5"
+            android:keyIcon="@drawable/sym_keyboard_delete"
+            android:iconPreview="@drawable/sym_keyboard_feedback_delete"
+            android:keyWidth="15%p"
+            android:isRepeatable="true"
+            />
+        <Key android:codes="10"
+            android:keyIcon="@drawable/sym_keyboard_return"
+            android:iconPreview="@drawable/sym_keyboard_feedback_return"
+            android:keyWidth="15%p"
+            android:keyEdgeFlags="right"
+            />
+
     </Row>
 </Keyboard>

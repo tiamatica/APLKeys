@@ -24,6 +24,7 @@ public class APLPad extends Activity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.aplpad_activity);
+        PreferenceManager.setDefaultValues(this, R.xml.aplpad_preferences, false);
 
         mEditText = (EditText) this.findViewById(R.id.edit_message);
         mPrefs = PreferenceManager.getDefaultSharedPreferences(this);

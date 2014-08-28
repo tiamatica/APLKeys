@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <ListPreference
+        android:key="pref_font_name"
+        android:title="@string/pref_fontName_title"
+        android:dialogTitle="@string/pref_fontName_title"
+        android:entries="@array/pref_fontName_entries"
+        android:entryValues="@array/pref_fontName_values"
+        android:defaultValue="@string/pref_fontName_default"
+        />
+</PreferenceScreen>

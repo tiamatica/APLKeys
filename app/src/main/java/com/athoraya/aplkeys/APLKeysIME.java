@@ -20,7 +20,10 @@ import android.view.inputmethod.InputMethodSubtype;
 
 import com.athoraya.utils.TypefaceUtil;
 
+import java.util.concurrent.TimeUnit;
+
 /**
+ * Main APL keyboard IME class
  * Created by Gil on 21/07/2014.
  */
 public class APLKeysIME extends InputMethodService 
@@ -104,7 +107,7 @@ public class APLKeysIME extends InputMethodService
             mLastDisplayWidth = displayWidth;
         }
         */
-        if (mLastDisplayWidth < 600 && mFullQwerty == false) {
+        if (mLastDisplayWidth < 600 && !mFullQwerty) {
             mQwertyKeyboard = new APLKeyboard(this, R.xml.qwerty_reduced);
         } else {
             mQwertyKeyboard = new APLKeyboard(this, R.xml.qwerty);
@@ -295,17 +298,6 @@ public class APLKeysIME extends InputMethodService
     }
 
     /**
-     * Helper to determine if a given character code is alphabetic.
-     */
-    private boolean isAlphabet(int code) {
-        if (Character.isLetter(code)) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    /**
      * Helper to send a key down / key up pair to the current editor.
      */
     private void keyDownUp(int keyEventCode) {
@@ -313,6 +305,7 @@ public class APLKeysIME extends InputMethodService
                 new KeyEvent(KeyEvent.ACTION_DOWN, keyEventCode));
         getCurrentInputConnection().sendKeyEvent(
                 new KeyEvent(KeyEvent.ACTION_UP, keyEventCode));
+
     }
 
     /**
@@ -341,7 +334,6 @@ public class APLKeysIME extends InputMethodService
             handleShift();
         } else if (primaryCode == Keyboard.KEYCODE_CANCEL) {
             handleClose();
-            return;
         } else if (primaryCode == APLKeyboardView.KEYCODE_OPTIONS) {
             Intent intent = new Intent(this, APLKeysIMESettings.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
@@ -353,13 +345,7 @@ public class APLKeysIME extends InputMethodService
         } else if (primaryCode == Keyboard.KEYCODE_MODE_CHANGE) {
             handleMode();
         } else if (primaryCode == '\n') {
-            if (mCurKeyboard.mEnterAction == EditorInfo.IME_NULL ||
-                mCurKeyboard.mEnterAction == EditorInfo.IME_ACTION_NONE ||
-                (mCurKeyboard.mEnterAction & EditorInfo.IME_FLAG_NO_ENTER_ACTION) == EditorInfo.IME_FLAG_NO_ENTER_ACTION) {
-                handleCharacter(primaryCode);
-            } else {
-                getCurrentInputConnection().performEditorAction(getCurrentInputEditorInfo().actionId);
-            }
+            sendKeyChar((char) primaryCode);
         } else {
             handleCharacter(primaryCode);
         }
@@ -415,7 +401,8 @@ public class APLKeysIME extends InputMethodService
     }
 
     private void handleBackspace() {
-        keyDownUp(KeyEvent.KEYCODE_DEL);
+        getCurrentInputConnection().deleteSurroundingText(1,0);
+        //keyDownUp(KeyEvent.KEYCODE_DEL);
         updateShiftKeyState(getCurrentInputEditorInfo());
     }
 
@@ -448,9 +435,10 @@ public class APLKeysIME extends InputMethodService
         if (isInputViewShown() && mInputView.isShifted()) {
             primaryCode = Character.toUpperCase(primaryCode);
         }
-        getCurrentInputConnection().commitText(
-            String.valueOf((char) primaryCode), 1);
-        updateShiftKeyState(getCurrentInputEditorInfo());
+        getCurrentInputConnection().commitText(String.valueOf((char) primaryCode), 1);
+        if (Character.isLetter(primaryCode)) {
+            updateShiftKeyState(getCurrentInputEditorInfo());
+        }
     }
 
     private void handleClose() {

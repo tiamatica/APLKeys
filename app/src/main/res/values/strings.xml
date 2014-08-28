@@ -21,4 +21,26 @@
 
     <string name="pref_full_qwerty">Full keyboard</string>
     <string name="pref_full_qwerty_summ">Use full sized qwerty keyboard in portrait mode</string>
+
+    <!-- APLPad settings -->
+    <string name="aplpad_name">APL Pad</string>
+    <string name="edit_message">Enter text</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_settings">Settings</string>
+    <string name="pref_fontName_title">Font style</string>
+    <string name="font_fixed">fonts/apl385.otf</string>
+    <string name="font_prop">fonts/apl333.otf</string>
+    <string name="pref_fontName_default">@string/font_fixed</string>
+    <string-array name="pref_fontName_entries">
+        <item>APL385 - Fixed width font</item>
+        <item>APL333 - Proportional font</item>
+    </string-array>
+    <string-array name="pref_fontName_values">
+        <item>@string/font_fixed</item>
+        <item>@string/font_prop</item>
+    </string-array>
+    <string-array name="pref_fontSize_entries">
+        <item>APL385 - Fixed width font</item>
+        <item>APL333 - Proportional font</item>
+    </string-array>
 </resources>

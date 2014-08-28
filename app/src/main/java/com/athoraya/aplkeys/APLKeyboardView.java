@@ -95,7 +95,7 @@ public class APLKeyboardView extends KeyboardView {
                         key.height - padding.bottom,
                         paint);
                 canvas.translate(-key.x - kbdPaddingLeft, -key.y - kbdPaddingTop);
-            } else  if (label != null) {    // draw text top right
+            } else if (label != null) {    // draw text top right
                 // Draw the text
                 canvas.translate(key.x + kbdPaddingLeft, key.y + kbdPaddingTop);
                 canvas.drawText(label,

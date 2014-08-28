@@ -22,4 +22,8 @@
     <dimen name="key_height_4_rows">60dip</dimen>
     <dimen name="key_height_5_rows">48dip</dimen>
     <dimen name="key_height_6_rows">40dip</dimen>
+
+    <!-- APLPAd settings -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
 </resources>

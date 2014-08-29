@@ -98,26 +98,31 @@
         <Key android:codes="95" android:keyLabel="_"/>
         <Key android:codes="35,126,9045,8802" android:keyLabel="#"
             android:popupCharacters="#~⍕≢" android:popupKeyboard="@xml/popup_keyboard"/>
-        <Key android:codes="59,9038,8801" android:keyLabel=";"
-            android:popupCharacters=";⍎≡" android:popupKeyboard="@xml/popup_keyboard"/>
-        <Key android:codes="58" android:keyLabel=":"/>
         <Key android:codes="96,180,172" android:keyLabel="`"
             android:popupCharacters="`´¬" android:popupKeyboard="@xml/popup_keyboard"/>
         <Key android:codes="39,8900" android:keyLabel="'"
             android:popupCharacters="'⋄" android:popupKeyboard="@xml/popup_keyboard"/>
-        <Key android:codes="34" android:keyLabel="&quot;"
+        <Key android:codes="34" android:keyLabel="&quot;"/>
+        <Key android:codes="59,9038,8801" android:keyLabel=";"
+            android:popupCharacters=";⍎≡" android:popupKeyboard="@xml/popup_keyboard"/>
+        <Key android:codes="58" android:keyLabel=":"
             android:keyEdgeFlags="right"/>
-
-
     </Row>
 
     <Row android:rowEdgeFlags="bottom">
         <Key android:codes="-1" android:keyIcon="@drawable/ic_action_dial_pad"
             android:keyWidth="15%p"
+            android:isFunctionKey="true"
             android:keyEdgeFlags="left"
             />
-        <Key android:codes="-2" android:keyLabel="ABC" android:keyWidth="15%p"/>
-        <Key android:codes="-6" android:keyLabel="⍺⍵" android:keyWidth="15%p"/>
+        <Key android:codes="-2"
+            android:keyLabel="ABC"
+            android:isFunctionKey="true"
+            android:keyWidth="15%p"/>
+        <Key android:codes="-6"
+            android:keyLabel="⍺⍵"
+            android:isFunctionKey="true"
+            android:keyWidth="15%p"/>
         <Key android:codes="32"
             android:keyIcon="@drawable/sym_keyboard_space"
             android:iconPreview="@drawable/sym_keyboard_feedback_space"
@@ -126,12 +131,14 @@
         <Key android:codes="-5"
             android:keyIcon="@drawable/sym_keyboard_delete"
             android:iconPreview="@drawable/sym_keyboard_feedback_delete"
+            android:isFunctionKey="true"
             android:keyWidth="15%p"
             android:isRepeatable="true"
             />
         <Key android:codes="10"
             android:keyIcon="@drawable/sym_keyboard_return"
             android:iconPreview="@drawable/sym_keyboard_feedback_return"
+            android:isFunctionKey="true"
             android:keyWidth="15%p"
             android:keyEdgeFlags="right"
             />

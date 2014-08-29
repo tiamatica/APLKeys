@@ -277,9 +277,11 @@ public class APLKeyboard {
         public int edgeFlags;
         /** Whether this is a modifier key, such as Shift or Alt */
         public boolean modifier;
+        /** Whether this is a function key (used for styling) */
+        public boolean functionKey;
         /** The keyboard that this key belongs to */
         private APLKeyboard keyboard;
-        /** 
+        /**
          * If this key pops up a mini keyboard, this is the resource id for the XML layout for that
          * keyboard.
          */
@@ -380,6 +382,8 @@ public class APLKeyboard {
                     R.styleable.APLKeyboard_Key_isModifier, false);
             sticky = a.getBoolean(
                     R.styleable.APLKeyboard_Key_isSticky, false);
+            functionKey = a.getBoolean(
+                    R.styleable.APLKeyboard_Key_isFunctionKey, false);
             edgeFlags = a.getInt(R.styleable.APLKeyboard_Key_keyEdgeFlags, 0);
             edgeFlags |= parent.rowEdgeFlags;
 

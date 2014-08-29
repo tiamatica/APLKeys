@@ -8,12 +8,19 @@
              possible states: normal, pressed, checkable, checkable+pressed, checkable+checked,
              checkable+checked+pressed. -->
         <attr name="keyBackground" format="reference" />
+        <!-- Image for a function key. This image needs to be a StateListDrawable, with the following
+                     possible states: normal, pressed, checkable, checkable+pressed, checkable+checked,
+                     checkable+checked+pressed. -->
+        <attr name="fnKeyBackground" format="reference" />
 
         <!-- Size of the text for character keys. -->
         <attr name="keyTextSize" format="dimension" />
 
         <!-- Size of the text for custom keys with some text and no icon. -->
         <attr name="labelTextSize" format="dimension" />
+
+        <!-- Size of the text for super script. -->
+        <attr name="superTextSize" format="dimension" />
 
         <!-- Color to use for the label in a key. -->
         <attr name="keyTextColor" format="color" />
@@ -75,6 +82,8 @@
             <flag name="left" value="1" />
             <!-- Key is anchored to the right of the keyboard. -->
             <flag name="right" value="2" />
+            <!-- Key is anchored to the right of the keyboard. -->
+            <flag name="top" value="3" />
         </attr>
         <!-- Whether this is a modifier key such as Alt or Shift. -->
         <attr name="isModifier" format="boolean" />
@@ -93,6 +102,9 @@
         <!-- Mode of the keyboard. If the mode doesn't match the
              requested keyboard mode, the key will be skipped. -->
         <attr name="keyboardMode" />
+        <!-- Whether this is a function key (used for styling only). -->
+        <attr name="isFunctionKey" format="boolean" />
+
     </declare-styleable>
 
 </resources>

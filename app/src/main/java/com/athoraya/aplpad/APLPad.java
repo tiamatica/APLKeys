@@ -26,7 +26,7 @@ public class APLPad extends Activity {
         setContentView(R.layout.aplpad_activity);
         PreferenceManager.setDefaultValues(this, R.xml.aplpad_preferences, false);
 
-        mEditText = (EditText) this.findViewById(R.id.edit_message);
+        mEditText = this.findViewById(R.id.edit_message);
         mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
     }
 
@@ -69,7 +69,7 @@ public class APLPad extends Activity {
 
     private void loadPref(){
         String font_name = mPrefs.getString(APLPadSettings.KEY_PREF_FONT_NAME, "");
-        if (font_name != "") {
+        if (!font_name.equals("")) {
             mEditText.setTypeface(Typeface.createFromAsset(getAssets(), font_name));
         }
     }

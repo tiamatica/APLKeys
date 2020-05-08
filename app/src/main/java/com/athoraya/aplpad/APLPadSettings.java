@@ -37,7 +37,7 @@ public class APLPadSettings extends PreferenceActivity {
             setFontNameSummary();
         }
 
-        private SharedPreferences.OnSharedPreferenceChangeListener mPrefsListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
+        private final SharedPreferences.OnSharedPreferenceChangeListener mPrefsListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
             @Override
             public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
                 if (key.equals(KEY_PREF_FONT_NAME)) {

@@ -19,6 +19,11 @@
     <CheckBoxPreference
         android:key="pref_full_qwerty"
         android:title="@string/pref_full_qwerty"
-        android:summary="@string/pref_full_qwerty_summ"
+        android:summary="@string/pref_full_qwerty_summary"
+        android:defaultValue="true" />
+    <CheckBoxPreference
+        android:key="pref_show_preview"
+        android:title="@string/pref_show_preview"
+        android:summary="@string/pref_show_preview_summary"
         android:defaultValue="true" />
 </PreferenceScreen>

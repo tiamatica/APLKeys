@@ -18,25 +18,23 @@
 */
 -->
 <LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:background="@drawable/keyboard_popup_panel_background"
-        >
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:background="@drawable/keyboard_popup_panel_background"
+    >
         
     <com.athoraya.aplkeys.APLKeyboardView
-            android:id="@android:id/keyboardView"
-            android:background="@android:color/transparent"
-            android:layout_alignParentBottom="true"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            keyPreviewLayout="@layout/keyboard_key_preview"
-            popupLayout="@layout/keyboard_popup_keyboard"
-            keyTextSize="22sp"
-            style="@style/APLKeyboardView"
-
+        android:id="@android:id/keyboardView"
+        android:background="@android:color/transparent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        keyPreviewLayout="@layout/keyboard_key_preview"
+        keyTextSize="22sp"
+        style="@style/APLKeyboardView"
         />
+    <!--  popupLayout="@layout/keyboard_popup_keyboard" -->
     <ImageButton android:id="@android:id/closeButton"
         android:background="@android:color/transparent"
         android:src="@drawable/btn_close" 
@@ -44,7 +42,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
         android:clickable="true"
+        android:contentDescription="@string/hint_close_btn"
         />
 </LinearLayout>

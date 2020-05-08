@@ -60,17 +60,17 @@ import java.util.StringTokenizer;
  */
 public class APLKeyboard {
 
-    static final String TAG = "Keyboard";
+    private static final String TAG = "Keyboard";
     
     // Keyboard XML Tags
     private static final String TAG_KEYBOARD = "Keyboard";
     private static final String TAG_ROW = "Row";
     private static final String TAG_KEY = "Key";
 
-    public static final int EDGE_LEFT = 0x01;
-    public static final int EDGE_RIGHT = 0x02;
-    public static final int EDGE_TOP = 0x04;
-    public static final int EDGE_BOTTOM = 0x08;
+    private static final int EDGE_LEFT = 0x01;
+    private static final int EDGE_RIGHT = 0x02;
+    private static final int EDGE_TOP = 0x04;
+    private static final int EDGE_BOTTOM = 0x08;
 
     public static final int KEYCODE_SHIFT = -1;
     public static final int KEYCODE_MODE_CHANGE = -2;
@@ -98,10 +98,10 @@ public class APLKeyboard {
     private boolean mShifted;
     
     /** Key instance for the shift key, if present */
-    private Key[] mShiftKeys = { null, null };
+    private final Key[] mShiftKeys = { null, null };
 
     /** Key index for the shift key, if present */
-    private int[] mShiftKeyIndices = {-1, -1};
+    private final int[] mShiftKeyIndices = {-1, -1};
 
     /** Current key width, while loading the keyboard */
     private int mKeyWidth;
@@ -119,19 +119,19 @@ public class APLKeyboard {
     private int mTotalWidth;
     
     /** List of keys in this keyboard */
-    private List<Key> mKeys;
+    private final List<Key> mKeys;
     
     /** List of modifier keys such as Shift & Alt, if any */
-    private List<Key> mModifierKeys;
+    private final List<Key> mModifierKeys;
     
     /** Width of the screen available to fit the keyboard */
-    private int mDisplayWidth;
+    private final int mDisplayWidth;
 
     /** Height of the screen */
-    private int mDisplayHeight;
+    private final int mDisplayHeight;
 
     /** Keyboard mode, or zero, if none.  */
-    private int mKeyboardMode;
+    private final int mKeyboardMode;
 
     // Variables for pre-computing nearest keys.
     
@@ -143,15 +143,15 @@ public class APLKeyboard {
     private int[][] mGridNeighbors;
     private int mProximityThreshold;
     /** Number of key widths from current touch point to search for nearest keys. */
-    private static float SEARCH_DISTANCE = 1.8f;
+    private static final float SEARCH_DISTANCE = 1.8f;
 
-    private ArrayList<Row> rows = new ArrayList<Row>();
+    private final ArrayList<Row> rows = new ArrayList<>();
 
     /** gil : my custom code */
     private Key mEnterKey;
     private Key mSpaceKey;
     private Key mShiftKey;
-    public int mEnterAction;
+    private int mEnterAction;
 
     /**
      * Container for keys in the keyboard. All keys in a row are at the same Y-coordinate. 
@@ -164,34 +164,34 @@ public class APLKeyboard {
      * @attr ref R.styleable#APLKeyboard_Row_rowEdgeFlags
      * @attr ref R.styleable#APLKeyboard_Row_keyboardMode
      */
-    public static class Row {
+    static class Row {
         /** Default width of a key in this row. */
-        public int defaultWidth;
+        int defaultWidth;
         /** Default height of a key in this row. */
-        public int defaultHeight;
+        int defaultHeight;
         /** Default horizontal gap between keys in this row. */
-        public int defaultHorizontalGap;
+        int defaultHorizontalGap;
         /** Vertical gap following this row. */
-        public int verticalGap;
+        int verticalGap;
 
-        ArrayList<Key> mKeys = new ArrayList<Key>();
+        final ArrayList<Key> mKeys = new ArrayList<>();
 
         /**
          * Edge flags for this row of keys. Possible values that can be assigned are
          * {@link APLKeyboard#EDGE_TOP EDGE_TOP} and {@link APLKeyboard#EDGE_BOTTOM EDGE_BOTTOM}
          */
-        public int rowEdgeFlags;
+        int rowEdgeFlags;
         
         /** The keyboard mode for this row */
-        public int mode;
+        int mode;
         
-        private APLKeyboard parent;
+        private final APLKeyboard parent;
 
-        public Row(APLKeyboard parent) {
+        Row(APLKeyboard parent) {
             this.parent = parent;
         }
         
-        public Row(Resources res, APLKeyboard parent, XmlResourceParser parser) {
+        Row(Resources res, APLKeyboard parent, XmlResourceParser parser) {
             this.parent = parent;
             TypedArray a = res.obtainAttributes(Xml.asAttributeSet(parser), 
                     R.styleable.APLKeyboard);
@@ -254,15 +254,15 @@ public class APLKeyboard {
         /** The horizontal gap before this key */
         public int gap;
         /** Whether this key is sticky, i.e., a toggle key */
-        public boolean sticky;
+        boolean sticky;
         /** X coordinate of the key in the keyboard layout */
         public int x;
         /** Y coordinate of the key in the keyboard layout */
         public int y;
         /** The current pressed state of this key */
-        public boolean pressed;
+        boolean pressed;
         /** If this is a sticky key, is it on? */
-        public boolean on;
+        boolean on;
         /** Text to output when pressed. This can be multiple characters, like ".com" */
         public CharSequence text;
         /** Popup characters */
@@ -274,13 +274,13 @@ public class APLKeyboard {
          * {@link APLKeyboard#EDGE_LEFT}, {@link APLKeyboard#EDGE_RIGHT}, {@link APLKeyboard#EDGE_TOP} and
          * {@link APLKeyboard#EDGE_BOTTOM}.
          */
-        public int edgeFlags;
+        int edgeFlags;
         /** Whether this is a modifier key, such as Shift or Alt */
-        public boolean modifier;
+        boolean modifier;
         /** Whether this is a function key (used for styling) */
         public boolean functionKey;
         /** The keyboard that this key belongs to */
-        private APLKeyboard keyboard;
+        private final APLKeyboard keyboard;
         /**
          * If this key pops up a mini keyboard, this is the resource id for the XML layout for that
          * keyboard.
@@ -318,7 +318,7 @@ public class APLKeyboard {
         };
 
         /** Create an empty key with no attributes. */
-        public Key(Row parent) {
+        Key(Row parent) {
             keyboard = parent.parent;
             height = parent.defaultHeight;
             width = parent.defaultWidth;
@@ -335,7 +335,7 @@ public class APLKeyboard {
          * @param y the y coordinate of the top-left
          * @param parser the XML parser containing the attributes for this key
          */
-        public Key(Resources res, Row parent, int x, int y, XmlResourceParser parser) {
+        Key(Resources res, Row parent, int x, int y, XmlResourceParser parser) {
             this(parent);
 
             this.x = x;
@@ -458,14 +458,10 @@ public class APLKeyboard {
             boolean rightEdge = (edgeFlags & EDGE_RIGHT) > 0;
             boolean topEdge = (edgeFlags & EDGE_TOP) > 0;
             boolean bottomEdge = (edgeFlags & EDGE_BOTTOM) > 0;
-            if ((x >= this.x || (leftEdge && x <= this.x + this.width)) 
-                    && (x < this.x + this.width || (rightEdge && x >= this.x)) 
+            return (x >= this.x || (leftEdge && x <= this.x + this.width))
+                    && (x < this.x + this.width || (rightEdge && x >= this.x))
                     && (y >= this.y || (topEdge && y <= this.y + this.height))
-                    && (y < this.y + this.height || (bottomEdge && y >= this.y))) {
-                return true;
-            } else {
-                return false;
-            }
+                    && (y < this.y + this.height || (bottomEdge && y >= this.y));
         }
 
         /**
@@ -537,8 +533,8 @@ public class APLKeyboard {
         mDefaultWidth = mDisplayWidth / 10;
         mDefaultVerticalGap = 0;
         mDefaultHeight = mDefaultWidth;
-        mKeys = new ArrayList<Key>();
-        mModifierKeys = new ArrayList<Key>();
+        mKeys = new ArrayList<>();
+        mModifierKeys = new ArrayList<>();
         mKeyboardMode = modeId;
         loadKeyboard(context, context.getResources().getXml(xmlLayoutResId));
     }
@@ -550,7 +546,7 @@ public class APLKeyboard {
      * @param xmlLayoutResId the resource file that contains the keyboard layout and keys.
      * @param modeId keyboard mode identifier
      */
-    public APLKeyboard(Context context, int xmlLayoutResId, int modeId) {
+    private APLKeyboard(Context context, int xmlLayoutResId, int modeId) {
         DisplayMetrics dm = context.getResources().getDisplayMetrics();
         mDisplayWidth = dm.widthPixels;
         mDisplayHeight = dm.heightPixels;
@@ -560,8 +556,8 @@ public class APLKeyboard {
         mDefaultWidth = mDisplayWidth / 10;
         mDefaultVerticalGap = 0;
         mDefaultHeight = mDefaultWidth;
-        mKeys = new ArrayList<Key>();
-        mModifierKeys = new ArrayList<Key>();
+        mKeys = new ArrayList<>();
+        mModifierKeys = new ArrayList<>();
         mKeyboardMode = modeId;
         loadKeyboard(context, context.getResources().getXml(xmlLayoutResId));
     }
@@ -777,19 +773,23 @@ public class APLKeyboard {
         return new int[0];
     }
 
-    protected Row createRowFromXml(Resources res, XmlResourceParser parser) {
+    private Row createRowFromXml(Resources res, XmlResourceParser parser) {
         return new Row(res, this, parser);
     }
     
-    protected Key createKeyFromXml(Resources res, Row parent, int x, int y, 
-            XmlResourceParser parser) {
+    private Key createKeyFromXml(Resources res, Row parent, int x, int y,
+                                 XmlResourceParser parser) {
         Key key = new Key(res, parent, x, y, parser);
-        if (key.codes[0] == 10) {
-            mEnterKey = key;
-        } else if (key.codes[0] == ' ') {
-            mSpaceKey = key;
-        } else if (key.codes[0] == KEYCODE_SHIFT) {
-            mShiftKey = key;
+        switch (key.codes[0]) {
+            case 10:
+                mEnterKey = key;
+                break;
+            case ' ':
+                mSpaceKey = key;
+                break;
+            case KEYCODE_SHIFT:
+                mShiftKey = key;
+                break;
         }
         return key;
     }
@@ -797,50 +797,52 @@ public class APLKeyboard {
     private void loadKeyboard(Context context, XmlResourceParser parser) {
         boolean inKey = false;
         boolean inRow = false;
-        boolean leftMostKey = false;
-        int row = 0;
         int x = 0;
         int y = 0;
         Key key = null;
         Row currentRow = null;
         Resources res = context.getResources();
-        boolean skipRow = false;
+        boolean skipRow;
 
         try {
             int event;
             while ((event = parser.next()) != XmlResourceParser.END_DOCUMENT) {
                 if (event == XmlResourceParser.START_TAG) {
                     String tag = parser.getName();
-                    if (TAG_ROW.equals(tag)) {
-                        inRow = true;
-                        x = 0;
-                        currentRow = createRowFromXml(res, parser);
-                        rows.add(currentRow);
-                        skipRow = currentRow.mode != 0 && currentRow.mode != mKeyboardMode;
-                        if (skipRow) {
-                            skipToEndOfRow(parser);
-                            inRow = false;
-                        }
-                   } else if (TAG_KEY.equals(tag)) {
-                        inKey = true;
-                        key = createKeyFromXml(res, currentRow, x, y, parser);
-                        mKeys.add(key);
-                        if (key.codes[0] == KEYCODE_SHIFT) {
-                            // Find available shift key slot and put this shift key in it
-                            for (int i = 0; i < mShiftKeys.length; i++) {
-                                if (mShiftKeys[i] == null) {
-                                    mShiftKeys[i] = key;
-                                    mShiftKeyIndices[i] = mKeys.size()-1;
-                                    break;
-                                }
+                    switch (tag) {
+                        case TAG_ROW:
+                            inRow = true;
+                            x = 0;
+                            currentRow = createRowFromXml(res, parser);
+                            rows.add(currentRow);
+                            skipRow = currentRow.mode != 0 && currentRow.mode != mKeyboardMode;
+                            if (skipRow) {
+                                skipToEndOfRow(parser);
+                                inRow = false;
                             }
-                            mModifierKeys.add(key);
-                        } else if (key.codes[0] == KEYCODE_ALT) {
-                            mModifierKeys.add(key);
-                        }
-                        currentRow.mKeys.add(key);
-                    } else if (TAG_KEYBOARD.equals(tag)) {
-                        parseKeyboardAttributes(res, parser);
+                            break;
+                        case TAG_KEY:
+                            inKey = true;
+                            key = createKeyFromXml(res, currentRow, x, y, parser);
+                            mKeys.add(key);
+                            if (key.codes[0] == KEYCODE_SHIFT) {
+                                // Find available shift key slot and put this shift key in it
+                                for (int i = 0; i < mShiftKeys.length; i++) {
+                                    if (mShiftKeys[i] == null) {
+                                        mShiftKeys[i] = key;
+                                        mShiftKeyIndices[i] = mKeys.size() - 1;
+                                        break;
+                                    }
+                                }
+                                mModifierKeys.add(key);
+                            } else if (key.codes[0] == KEYCODE_ALT) {
+                                mModifierKeys.add(key);
+                            }
+                            currentRow.mKeys.add(key);
+                            break;
+                        case TAG_KEYBOARD:
+                            parseKeyboardAttributes(res, parser);
+                            break;
                     }
                 } else if (event == XmlResourceParser.END_TAG) {
                     if (inKey) {
@@ -853,9 +855,6 @@ public class APLKeyboard {
                         inRow = false;
                         y += currentRow.verticalGap;
                         y += currentRow.defaultHeight;
-                        row++;
-                    } else {
-                        // TODO: error or extend?
                     }
                 }
             }
@@ -898,7 +897,7 @@ public class APLKeyboard {
         a.recycle();
     }
     
-    static int getDimensionOrFraction(TypedArray a, int index, int base, int defValue) {
+    private static int getDimensionOrFraction(TypedArray a, int index, int base, int defValue) {
         TypedValue value = a.peekValue(index);
         if (value == null) return defValue;
         if (value.type == TypedValue.TYPE_DIMENSION) {

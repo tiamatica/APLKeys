@@ -38,12 +38,14 @@ public class APLKeysIME extends InputMethodService
     private APLKeyboard mCurKeyboard;
 
     private Boolean mFullQwerty;
+    private Boolean mShowPreview;
     private Boolean mPrefsChanged;
 
     private static final String KEY_PREF_FULL_QWERTY = "pref_full_qwerty";
+    private static final String KEY_PREF_SHOW_PREVIEW = "pref_show_preview";
 
     private SharedPreferences mPrefs;
-    SharedPreferences.OnSharedPreferenceChangeListener mPrefsListener =
+    private final SharedPreferences.OnSharedPreferenceChangeListener mPrefsListener =
             new SharedPreferences.OnSharedPreferenceChangeListener(){
                 @Override
                 public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
@@ -75,6 +77,7 @@ public class APLKeysIME extends InputMethodService
 
     private void loadPrefs() {
         mFullQwerty = mPrefs.getBoolean(KEY_PREF_FULL_QWERTY, true);
+        mShowPreview = mPrefs.getBoolean(KEY_PREF_SHOW_PREVIEW, true);
         mPrefsChanged = false;
     }
 
@@ -88,18 +91,10 @@ public class APLKeysIME extends InputMethodService
         int displayWidth = getMaxWidth();
         hasChanged = hasChanged || displayWidth != mLastDisplayWidth;
         mLastDisplayWidth = displayWidth;
-        if (!hasChanged) return;
-        /*
-        if (mQwertyKeyboard != null) {
-            // Configuration changes can happen after the keyboard gets recreated,
-            // so we need to be able to re-build the keyboards if the available
-            // space has changed.
-            if (displayWidth == mLastDisplayWidth) return;
-            mLastDisplayWidth = displayWidth;
-        } else {
-            mLastDisplayWidth = displayWidth;
+        if (mInputView != null) {
+            mInputView.setPreviewEnabled(mShowPreview);
         }
-        */
+        if (!hasChanged) return;
         if (mLastDisplayWidth < 600 && !mFullQwerty) {
             mQwertyKeyboard = new APLKeyboard(this, R.xml.qwerty_reduced);
         } else {
@@ -122,6 +117,7 @@ public class APLKeysIME extends InputMethodService
                 R.layout.input, null);
         mInputView.setOnKeyboardActionListener(this);
         mInputView.setKeyboard(mQwertyKeyboard);
+        mInputView.setPreviewEnabled(mShowPreview);
         return mInputView;
     }
 
@@ -158,14 +154,6 @@ public class APLKeysIME extends InputMethodService
                 // be doing predictive text (showing candidates as the
                 // user types).
                 mCurKeyboard = mQwertyKeyboard;
-                int variation = attribute.inputType & InputType.TYPE_MASK_VARIATION;
-                if (variation == InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS
-                        || variation == InputType.TYPE_TEXT_VARIATION_URI
-                        || variation == InputType.TYPE_TEXT_VARIATION_FILTER) {
-                    // Our predictions are not useful for e-mail addresses
-                    // or URIs.
-                    // mPredictionOn = false;
-                }
 
                 // We also want to look at the current state of the editor
                 // to decide whether our alphabetic keyboard should start out
@@ -213,12 +201,11 @@ public class APLKeysIME extends InputMethodService
         mInputView.setSubtypeOnSpaceKey(subtype);
     }
 
-    @Override
     /**
      * Called when the subtype was changed.
      * @param newSubtype the subtype which is being changed to.
      */
-    public void onCurrentInputMethodSubtypeChanged(InputMethodSubtype newSubtype) {
+    @Override public void onCurrentInputMethodSubtypeChanged(InputMethodSubtype newSubtype) {
         mInputView.setSubtypeOnSpaceKey(newSubtype);
     }
 
@@ -258,19 +245,6 @@ public class APLKeysIME extends InputMethodService
         }
 
         return super.onKeyDown(keyCode, event);
-    }
-
-    /**
-     * Use this to monitor key events being delivered to the application.
-     * We get first crack at them, and can either resume them or let them
-     * continue to the app.
-     */
-    @Override public boolean onKeyUp(int keyCode, KeyEvent event) {
-        // If we want to do transformations on text being entered with a hard
-        // keyboard, we need to process the up events to update the meta key
-        // state we are tracking.
-
-        return super.onKeyUp(keyCode, event);
     }
 
 
@@ -321,26 +295,35 @@ public class APLKeysIME extends InputMethodService
 
 
     public void onKey(int primaryCode, int[] keyCodes) {
-        if (primaryCode == Keyboard.KEYCODE_DELETE) {
-            handleBackspace();
-        } else if (primaryCode == Keyboard.KEYCODE_SHIFT) {
-            handleShift();
-        } else if (primaryCode == Keyboard.KEYCODE_CANCEL) {
-            handleClose();
-        } else if (primaryCode == APLKeyboardView.KEYCODE_OPTIONS) {
-            Intent intent = new Intent(this, APLKeysIMESettings.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
-                    | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED
-                    | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intent);
-        } else if (primaryCode == Keyboard.KEYCODE_ALT) {
-            handleAlt();
-        } else if (primaryCode == Keyboard.KEYCODE_MODE_CHANGE) {
-            handleMode();
-        } else if (primaryCode == '\n') {
-            sendKeyChar((char) primaryCode);
-        } else {
-            handleCharacter(primaryCode);
+        switch (primaryCode) {
+            case Keyboard.KEYCODE_DELETE:
+                handleBackspace();
+                break;
+            case Keyboard.KEYCODE_SHIFT:
+                handleShift();
+                break;
+            case Keyboard.KEYCODE_CANCEL:
+                handleClose();
+                break;
+            case APLKeyboardView.KEYCODE_OPTIONS:
+                Intent intent = new Intent(this, APLKeysIMESettings.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                        | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED
+                        | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+                break;
+            case Keyboard.KEYCODE_ALT:
+                handleAlt();
+                break;
+            case Keyboard.KEYCODE_MODE_CHANGE:
+                handleMode();
+                break;
+            case '\n':
+                sendKeyChar((char) primaryCode);
+                break;
+            default:
+                handleCharacter(primaryCode);
+                break;
         }
     }
 

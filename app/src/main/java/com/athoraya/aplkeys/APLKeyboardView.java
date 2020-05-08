@@ -26,12 +26,11 @@ import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.graphics.Paint.Align;
-import android.graphics.Region.Op;
 import android.graphics.drawable.Drawable;
+import android.media.AudioDeviceInfo;
 import android.media.AudioManager;
 import android.os.Handler;
 import android.os.Message;
-import android.provider.Settings;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.GestureDetector;
@@ -147,24 +146,22 @@ public class APLKeyboardView extends View implements View.OnClickListener {
     private int mKeyTextColor;
     private float mShadowRadius;
     private int mShadowColor;
-    private float mBackgroundDimAmount;
+    private final float mBackgroundDimAmount;
 
     private TextView mPreviewText;
-    private PopupWindow mPreviewPopup;
+    private final PopupWindow mPreviewPopup;
     private int mPreviewTextSizeLarge;
     private int mPreviewOffset;
     private int mPreviewHeight;
     // Working variable
     private final int[] mCoordinates = new int[2];
 
-    private PopupWindow mPopupKeyboard;
-    private View mMiniKeyboardContainer;
-    private APLKeyboardView mMiniKeyboard;
+    private final PopupWindow mPopupKeyboard;
     private boolean mMiniKeyboardOnScreen;
     private View mPopupParent;
     private int mMiniKeyboardOffsetX;
     private int mMiniKeyboardOffsetY;
-    private Map<Key, View> mMiniKeyboardCache;
+    private final Map<Key, View> mMiniKeyboardCache;
     private Key[] mKeys;
 
     /**
@@ -184,9 +181,8 @@ public class APLKeyboardView extends View implements View.OnClickListener {
     private int mVerticalCorrection;
     private int mProximityThreshold;
 
-    private boolean mPreviewCentered = false;
     private boolean mShowPreview = true;
-    private boolean mShowTouchPoints = true;
+    private final boolean mShowTouchPoints = true;
     private int mPopupPreviewX;
     private int mPopupPreviewY;
 
@@ -197,9 +193,9 @@ public class APLKeyboardView extends View implements View.OnClickListener {
 
     private boolean mProximityCorrectOn;
 
-    private Paint mPaint;
-    private Paint myPaint;
-    private Rect mPadding;
+    private final Paint mPaint;
+    private final Paint myPaint;
+    private final Rect mPadding;
 
     private long mDownTime;
     private long mLastMoveTime;
@@ -210,7 +206,7 @@ public class APLKeyboardView extends View implements View.OnClickListener {
     private int mDownKey = NOT_A_KEY;
     private long mLastKeyTime;
     private long mCurrentKeyTime;
-    private int[] mKeyIndices = new int[12];
+    private final int[] mKeyIndices = new int[12];
     private GestureDetector mGestureDetector;
     private int mPopupX;
     private int mPopupY;
@@ -218,11 +214,11 @@ public class APLKeyboardView extends View implements View.OnClickListener {
     private int mPopupLayout;
     private boolean mAbortKey;
     private Key mInvalidatedKey;
-    private Rect mClipRegion = new Rect(0, 0, 0, 0);
+    private final Rect mClipRegion = new Rect(0, 0, 0, 0);
     private boolean mPossiblePoly;
-    private SwipeTracker mSwipeTracker = new SwipeTracker();
-    private int mSwipeThreshold;
-    private boolean mDisambiguateSwipe;
+    private final SwipeTracker mSwipeTracker = new SwipeTracker();
+    private final int mSwipeThreshold;
+    private final boolean mDisambiguateSwipe;
 
     // Variables for dealing with multiple pointers
     private int mOldPointerCount = 1;
@@ -236,8 +232,8 @@ public class APLKeyboardView extends View implements View.OnClickListener {
     private static final int REPEAT_START_DELAY = 400;
     private static final int LONGPRESS_TIMEOUT = ViewConfiguration.getLongPressTimeout();
 
-    private static int MAX_NEARBY_KEYS = 12;
-    private int[] mDistances = new int[MAX_NEARBY_KEYS];
+    private static final int MAX_NEARBY_KEYS = 12;
+    private final int[] mDistances = new int[MAX_NEARBY_KEYS];
 
     // For multi-tap
     private int mLastSentIndex;
@@ -245,7 +241,7 @@ public class APLKeyboardView extends View implements View.OnClickListener {
     private long mLastTapTime;
     private boolean mInMultiTap;
     private static final int MULTITAP_INTERVAL = 800; // milliseconds
-    private StringBuilder mPreviewLabel = new StringBuilder(1);
+    private final StringBuilder mPreviewLabel = new StringBuilder(1);
 
     /**
      * Whether the keyboard bitmap needs to be redrawn before it's blitted. *
@@ -254,7 +250,7 @@ public class APLKeyboardView extends View implements View.OnClickListener {
     /**
      * The dirty region in the keyboard bitmap
      */
-    private Rect mDirtyRect = new Rect();
+    private final Rect mDirtyRect = new Rect();
     /**
      * The keyboard bitmap for faster updates
      */
@@ -270,19 +266,19 @@ public class APLKeyboardView extends View implements View.OnClickListener {
     /**
      * The accessibility manager for accessibility support
      */
-    private AccessibilityManager mAccessibilityManager;
+    private final AccessibilityManager mAccessibilityManager;
     /**
      * The audio manager for accessibility support
      */
-    private AudioManager mAudioManager;
+    private final AudioManager mAudioManager;
     /**
      * Whether the requirement of a headset to hear passwords if accessibility is enabled is announced.
      */
     private boolean mHeadsetRequiredToHearPasswordsAnnounced;
 
-    private Context mContext;
+    private final Context mContext;
 
-    Handler mHandler = new Handler() {
+    private final Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
@@ -371,6 +367,7 @@ public class APLKeyboardView extends View implements View.OnClickListener {
                     break;
             }
         }
+        a.recycle();
 
         mBackgroundDimAmount = 0.5f;
 
@@ -409,7 +406,7 @@ public class APLKeyboardView extends View implements View.OnClickListener {
 
 
         mPadding = new Rect(0, 0, 0, 0);
-        mMiniKeyboardCache = new HashMap<Key, View>();
+        mMiniKeyboardCache = new HashMap<>();
         mKeyBackground.getPadding(mPadding);
 
         mSwipeThreshold = (int) (500 * getResources().getDisplayMetrics().density);
@@ -491,7 +488,7 @@ public class APLKeyboardView extends View implements View.OnClickListener {
      *
      * @return the listener attached to this keyboard
      */
-    protected OnKeyboardActionListener getOnKeyboardActionListener() {
+    private OnKeyboardActionListener getOnKeyboardActionListener() {
         return mKeyboardActionListener;
     }
 
@@ -559,10 +556,7 @@ public class APLKeyboardView extends View implements View.OnClickListener {
      * @see APLKeyboardView#setShifted(boolean)
      */
     public boolean isShifted() {
-        if (mKeyboard != null) {
-            return mKeyboard.isShifted();
-        }
-        return false;
+        return mKeyboard != null && mKeyboard.isShifted();
     }
 
     /**
@@ -586,15 +580,11 @@ public class APLKeyboardView extends View implements View.OnClickListener {
         return mShowPreview;
     }
 
-    public void setVerticalCorrection(int verticalOffset) {
-
-    }
-
-    public void setPopupParent(View v) {
+    private void setPopupParent(View v) {
         mPopupParent = v;
     }
 
-    public void setPopupOffset(int x, int y) {
+    private void setPopupOffset(int x, int y) {
         mMiniKeyboardOffsetX = x;
         mMiniKeyboardOffsetY = y;
         if (mPreviewPopup.isShowing()) {
@@ -667,8 +657,7 @@ public class APLKeyboardView extends View implements View.OnClickListener {
         if (keys == null) return;
         int length = keys.length;
         int dimensionSum = 0;
-        for (int i = 0; i < length; i++) {
-            Key key = keys[i];
+        for (Key key : keys) {
             dimensionSum += Math.min(key.width, key.height) + key.gap;
         }
         if (dimensionSum < 0 || length == 0) return;
@@ -709,7 +698,8 @@ public class APLKeyboardView extends View implements View.OnClickListener {
             mKeyboardChanged = false;
         }
         final Canvas canvas = mCanvas;
-        canvas.clipRect(mDirtyRect, Op.REPLACE);
+        canvas.save();
+        canvas.clipRect(mDirtyRect);
 
         if (mKeyboard == null) return;
 
@@ -738,9 +728,7 @@ public class APLKeyboardView extends View implements View.OnClickListener {
             }
         }
         canvas.drawColor(0x00000000, PorterDuff.Mode.CLEAR);
-        final int keyCount = keys.length;
-        for (int i = 0; i < keyCount; i++) {
-            final Key key = keys[i];
+        for (Key key : keys) {
             if (drawSingleKey && invalidKey != key) {
                 continue;
             }
@@ -830,6 +818,7 @@ public class APLKeyboardView extends View implements View.OnClickListener {
 
         mDrawPending = false;
         mDirtyRect.setEmpty();
+        canvas.restore();
     }
 
     private int getKeyIndices(int x, int y, int[] allKeys) {
@@ -839,13 +828,12 @@ public class APLKeyboardView extends View implements View.OnClickListener {
         int closestKeyDist = mProximityThreshold + 1;
         java.util.Arrays.fill(mDistances, Integer.MAX_VALUE);
         int[] nearestKeyIndices = mKeyboard.getNearestKeys(x, y);
-        final int keyCount = nearestKeyIndices.length;
-        for (int i = 0; i < keyCount; i++) {
-            final Key key = keys[nearestKeyIndices[i]];
+        for (int i : nearestKeyIndices) {
+            final Key key = keys[i];
             int dist = 0;
             boolean isInside = key.isInside(x, y);
             if (isInside) {
-                primaryIndex = nearestKeyIndices[i];
+                primaryIndex = i;
             }
 
             if (((mProximityCorrectOn
@@ -856,7 +844,7 @@ public class APLKeyboardView extends View implements View.OnClickListener {
                 final int nCodes = key.codes.length;
                 if (dist < closestKeyDist) {
                     closestKeyDist = dist;
-                    closestKey = nearestKeyIndices[i];
+                    closestKey = i;
                 }
 
                 if (allKeys == null) continue;
@@ -1010,14 +998,8 @@ public class APLKeyboardView extends View implements View.OnClickListener {
             lp.width = popupWidth;
             lp.height = popupHeight;
         }
-        if (!mPreviewCentered) {
-            mPopupPreviewX = key.x - mPreviewText.getPaddingLeft() + getPaddingLeft();
-            mPopupPreviewY = key.y - popupHeight + mPreviewOffset;
-        } else {
-            // TODO: Fix this if centering is brought back
-            mPopupPreviewX = 160 - mPreviewText.getMeasuredWidth() / 2;
-            mPopupPreviewY = -mPreviewText.getMeasuredHeight();
-        }
+        mPopupPreviewX = key.x - mPreviewText.getPaddingLeft() + getPaddingLeft();
+        mPopupPreviewY = key.y - popupHeight + mPreviewOffset;
         mHandler.removeMessages(MSG_REMOVE_PREVIEW);
         getLocationInWindow(mCoordinates);
         mCoordinates[0] += mMiniKeyboardOffsetX; // Offset may be zero
@@ -1058,47 +1040,49 @@ public class APLKeyboardView extends View implements View.OnClickListener {
         if (mAccessibilityManager.isEnabled()) {
             AccessibilityEvent event = AccessibilityEvent.obtain(eventType);
             onInitializeAccessibilityEvent(event);
-            String text = null;
+            String text;
             // This is very efficient since the properties are cached.
-            final boolean speakPassword = Settings.Secure.getInt(mContext.getContentResolver(),
-                    Settings.Secure.ACCESSIBILITY_SPEAK_PASSWORD, 0) != 0;
-            // Add text only if password announcement is enabled or if headset is
-            // used to avoid leaking passwords.
-            if (speakPassword || mAudioManager.isBluetoothA2dpOn()
-                    || mAudioManager.isWiredHeadsetOn()) {
+            // Always add text if headset is used to avoid leaking passwords.
+            AudioDeviceInfo[] audioDevices = mAudioManager.getDevices(AudioManager.GET_DEVICES_OUTPUTS);
+            boolean isHeadset = false;
+            for (AudioDeviceInfo adi : audioDevices) {
+                int t = adi.getType();
+                if (t == AudioDeviceInfo.TYPE_BLUETOOTH_A2DP
+                    || t == AudioDeviceInfo.TYPE_USB_HEADSET
+                    || t == AudioDeviceInfo.TYPE_WIRED_HEADPHONES
+                    || t == AudioDeviceInfo.TYPE_WIRED_HEADSET
+                        ) {
+                    isHeadset = true;
+                    break;
+                }
+            }
+            if (isHeadset) {
                 switch (code) {
                     case APLKeyboard.KEYCODE_ALT:
-//                        text = mContext.getString(R.string.keyboardview_keycode_alt);
                         text = mContext.getString(
                                 Resources.getSystem().getIdentifier("keyboardview_keycode_alt", "string", "android"));
                         break;
                     case APLKeyboard.KEYCODE_CANCEL:
-                        //text = mContext.getString(R.string.keyboardview_keycode_cancel);
                         text = mContext.getString(
                                 Resources.getSystem().getIdentifier("keyboardview_keycode_cancel", "string", "android"));
                         break;
                     case APLKeyboard.KEYCODE_DELETE:
-                        //text = mContext.getString(R.string.keyboardview_keycode_delete);
                         text = mContext.getString(
                                 Resources.getSystem().getIdentifier("keyboardview_keycode_delete", "string", "android"));
                         break;
                     case APLKeyboard.KEYCODE_DONE:
-                        //text = mContext.getString(R.string.keyboardview_keycode_done);
                         text = mContext.getString(
                                 Resources.getSystem().getIdentifier("keyboardview_keycode_done", "string", "android"));
                         break;
                     case APLKeyboard.KEYCODE_MODE_CHANGE:
-                        //text = mContext.getString(R.string.keyboardview_keycode_mode_change);
                         text = mContext.getString(
                                 Resources.getSystem().getIdentifier("keyboardview_keycode_change", "string", "android"));
                         break;
                     case APLKeyboard.KEYCODE_SHIFT:
-                        //text = mContext.getString(R.string.keyboardview_keycode_shift);
                         text = mContext.getString(
                                 Resources.getSystem().getIdentifier("keyboardview_keycode_shift", "string", "android"));
                         break;
                     case '\n':
-                        //text = mContext.getString(R.string.keyboardview_keycode_enter);
                         text = mContext.getString(
                                 Resources.getSystem().getIdentifier("keyboardview_keycode_enter", "string", "android"));
                         break;
@@ -1145,7 +1129,7 @@ public class APLKeyboardView extends View implements View.OnClickListener {
      * @param keyIndex the index of the key in the attached {@link APLKeyboard}.
      * @see #invalidateAllKeys
      */
-    public void invalidateKey(int keyIndex) {
+    private void invalidateKey(int keyIndex) {
         if (mKeys == null) return;
         if (keyIndex < 0 || keyIndex >= mKeys.length) {
             return;
@@ -1185,93 +1169,99 @@ public class APLKeyboardView extends View implements View.OnClickListener {
      * @return true if the long press is handled, false otherwise. Subclasses should call the
      * method on the base class if the subclass doesn't wish to handle the call.
      */
-    protected boolean onLongPress(Key popupKey) {
+    private boolean onLongPress(Key popupKey) {
+        View mMiniKeyboardContainer;
+        APLKeyboardView mMiniKeyboard;
+
+        if (popupKey.codes.length == 2) {
+            getOnKeyboardActionListener().onKey(popupKey.codes[1], null);
+            return true;
+        }
+
         if (popupKey.codes[0] == 32) {
             getOnKeyboardActionListener().onKey(KEYCODE_OPTIONS, null);
             return true;
         }
         int popupKeyboardId = popupKey.popupResId;
 
-        if (popupKeyboardId != 0) {
-            mMiniKeyboardContainer = mMiniKeyboardCache.get(popupKey);
-            if (mMiniKeyboardContainer == null) {
-                LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(
-                        Context.LAYOUT_INFLATER_SERVICE);
-                mMiniKeyboardContainer = inflater.inflate(mPopupLayout, null);
-                mMiniKeyboard = (APLKeyboardView) mMiniKeyboardContainer.findViewById(
-                        android.R.id.keyboardView);
-                View closeButton = mMiniKeyboardContainer.findViewById(
-                        android.R.id.closeButton);
-                if (closeButton != null) closeButton.setOnClickListener(this);
-                mMiniKeyboard.setOnKeyboardActionListener(new OnKeyboardActionListener() {
-                    public void onKey(int primaryCode, int[] keyCodes) {
-                        mKeyboardActionListener.onKey(primaryCode, keyCodes);
-                        dismissPopupKeyboard();
-                    }
+        if (popupKeyboardId == 0) return false;
 
-                    public void onText(CharSequence text) {
-                        mKeyboardActionListener.onText(text);
-                        dismissPopupKeyboard();
-                    }
-
-                    public void swipeLeft() {
-                    }
-
-                    public void swipeRight() {
-                    }
-
-                    public void swipeUp() {
-                    }
-
-                    public void swipeDown() {
-                    }
-
-                    public void onPress(int primaryCode) {
-                        mKeyboardActionListener.onPress(primaryCode);
-                    }
-
-                    public void onRelease(int primaryCode) {
-                        mKeyboardActionListener.onRelease(primaryCode);
-                    }
-                });
-                //mInputView.setSuggest(mSuggest);
-                APLKeyboard keyboard;
-                if (popupKey.popupCharacters != null) {
-                    keyboard = new APLKeyboard(getContext(), popupKeyboardId,
-                            popupKey.popupCharacters, -1, getPaddingLeft() + getPaddingRight());
-                } else {
-                    keyboard = new APLKeyboard(getContext(), popupKeyboardId);
+        mMiniKeyboardContainer = mMiniKeyboardCache.get(popupKey);
+        if (mMiniKeyboardContainer == null) {
+            LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(
+                    Context.LAYOUT_INFLATER_SERVICE);
+            mMiniKeyboardContainer = inflater.inflate(mPopupLayout, null);
+            mMiniKeyboard = mMiniKeyboardContainer.findViewById(
+                    android.R.id.keyboardView);
+            View closeButton = mMiniKeyboardContainer.findViewById(
+                    android.R.id.closeButton);
+            if (closeButton != null) closeButton.setOnClickListener(this);
+            mMiniKeyboard.setOnKeyboardActionListener(new OnKeyboardActionListener() {
+                public void onKey(int primaryCode, int[] keyCodes) {
+                    mKeyboardActionListener.onKey(primaryCode, keyCodes);
+                    dismissPopupKeyboard();
                 }
-                mMiniKeyboard.setKeyboard(keyboard);
-                mMiniKeyboard.setPopupParent(this);
-                mMiniKeyboardContainer.measure(
-                        MeasureSpec.makeMeasureSpec(getWidth(), MeasureSpec.AT_MOST),
-                        MeasureSpec.makeMeasureSpec(getHeight(), MeasureSpec.AT_MOST));
 
-                mMiniKeyboardCache.put(popupKey, mMiniKeyboardContainer);
+                public void onText(CharSequence text) {
+                    mKeyboardActionListener.onText(text);
+                    dismissPopupKeyboard();
+                }
+
+                public void swipeLeft() {
+                }
+
+                public void swipeRight() {
+                }
+
+                public void swipeUp() {
+                }
+
+                public void swipeDown() {
+                }
+
+                public void onPress(int primaryCode) {
+                    mKeyboardActionListener.onPress(primaryCode);
+                }
+
+                public void onRelease(int primaryCode) {
+                    mKeyboardActionListener.onRelease(primaryCode);
+                }
+            });
+            //mInputView.setSuggest(mSuggest);
+            APLKeyboard keyboard;
+            if (popupKey.popupCharacters != null) {
+                keyboard = new APLKeyboard(getContext(), popupKeyboardId,
+                        popupKey.popupCharacters, -1, getPaddingLeft() + getPaddingRight());
             } else {
-                mMiniKeyboard = (APLKeyboardView) mMiniKeyboardContainer.findViewById(
-                        android.R.id.keyboardView);
+                keyboard = new APLKeyboard(getContext(), popupKeyboardId);
             }
-            getLocationInWindow(mCoordinates);
-            mPopupX = popupKey.x + getPaddingLeft();
-            mPopupY = popupKey.y + getPaddingTop();
-            mPopupX = mPopupX + popupKey.width - mMiniKeyboardContainer.getMeasuredWidth();
-            mPopupY = mPopupY - mMiniKeyboardContainer.getMeasuredHeight();
-            final int x = mPopupX + mMiniKeyboardContainer.getPaddingRight() + mCoordinates[0];
-            final int y = mPopupY + mMiniKeyboardContainer.getPaddingBottom() + mCoordinates[1];
-            mMiniKeyboard.setPopupOffset(x < 0 ? 0 : x, y);
-            mMiniKeyboard.setShifted(isShifted());
-            mPopupKeyboard.setContentView(mMiniKeyboardContainer);
-            mPopupKeyboard.setWidth(mMiniKeyboardContainer.getMeasuredWidth());
-            mPopupKeyboard.setHeight(mMiniKeyboardContainer.getMeasuredHeight());
-            mPopupKeyboard.showAtLocation(this, Gravity.NO_GRAVITY, x, y);
-            mMiniKeyboardOnScreen = true;
-            //mMiniKeyboard.onTouchEvent(getTranslatedEvent(me));
-            invalidateAllKeys();
-            return true;
+            mMiniKeyboard.setKeyboard(keyboard);
+            mMiniKeyboard.setPopupParent(this);
+            mMiniKeyboardContainer.measure(
+                    MeasureSpec.makeMeasureSpec(getWidth(), MeasureSpec.AT_MOST),
+                    MeasureSpec.makeMeasureSpec(getHeight(), MeasureSpec.AT_MOST));
+
+            mMiniKeyboardCache.put(popupKey, mMiniKeyboardContainer);
+        } else {
+            mMiniKeyboard = mMiniKeyboardContainer.findViewById(android.R.id.keyboardView);
         }
-        return false;
+        getLocationInWindow(mCoordinates);
+        mPopupX = popupKey.x + getPaddingLeft();
+        mPopupY = popupKey.y + getPaddingTop();
+        mPopupX = mPopupX + popupKey.width - mMiniKeyboardContainer.getMeasuredWidth();
+        mPopupY = mPopupY - mMiniKeyboardContainer.getMeasuredHeight();
+        final int x = mPopupX + mMiniKeyboardContainer.getPaddingRight() + mCoordinates[0];
+        final int y = mPopupY + mMiniKeyboardContainer.getPaddingBottom() + mCoordinates[1];
+        mMiniKeyboard.setPopupOffset(x < 0 ? 0 : x, y);
+        mMiniKeyboard.setShifted(isShifted());
+        mPopupKeyboard.setContentView(mMiniKeyboardContainer);
+        mPopupKeyboard.setWidth(mMiniKeyboardContainer.getMeasuredWidth());
+        mPopupKeyboard.setHeight(mMiniKeyboardContainer.getMeasuredHeight());
+        mPopupKeyboard.showAtLocation(this, Gravity.NO_GRAVITY, x, y);
+        mMiniKeyboardOnScreen = true;
+        //mMiniKeyboard.onTouchEvent(getTranslatedEvent(me));
+        invalidateAllKeys();
+        return true;
     }
 
     @Override
@@ -1303,7 +1293,7 @@ public class APLKeyboardView extends View implements View.OnClickListener {
         // deal with the typical multi-pointer behavior of two-thumb typing
         final int pointerCount = me.getPointerCount();
         final int action = me.getAction();
-        boolean result = false;
+        boolean result;
         final long now = me.getEventTime();
 
         if (pointerCount != mOldPointerCount) {
@@ -1487,19 +1477,19 @@ public class APLKeyboardView extends View implements View.OnClickListener {
         return true;
     }
 
-    protected void swipeRight() {
+    private void swipeRight() {
         mKeyboardActionListener.swipeRight();
     }
 
-    protected void swipeLeft() {
+    private void swipeLeft() {
         mKeyboardActionListener.swipeLeft();
     }
 
-    protected void swipeUp() {
+    private void swipeUp() {
         mKeyboardActionListener.swipeUp();
     }
 
-    protected void swipeDown() {
+    private void swipeDown() {
         mKeyboardActionListener.swipeDown();
     }
 
@@ -1581,11 +1571,11 @@ public class APLKeyboardView extends View implements View.OnClickListener {
         float mYVelocity;
         float mXVelocity;
 
-        public void clear() {
+        void clear() {
             mPastTime[0] = 0;
         }
 
-        public void addMovement(MotionEvent ev) {
+        void addMovement(MotionEvent ev) {
             long time = ev.getEventTime();
             final int N = ev.getHistorySize();
             for (int i = 0; i < N; i++) {
@@ -1629,11 +1619,11 @@ public class APLKeyboardView extends View implements View.OnClickListener {
             }
         }
 
-        public void computeCurrentVelocity(int units) {
+        void computeCurrentVelocity(int units) {
             computeCurrentVelocity(units, Float.MAX_VALUE);
         }
 
-        public void computeCurrentVelocity(int units, float maxVelocity) {
+        void computeCurrentVelocity(int units, float maxVelocity) {
             final float[] pastX = mPastX;
             final float[] pastY = mPastY;
             final long[] pastTime = mPastTime;
@@ -1670,17 +1660,17 @@ public class APLKeyboardView extends View implements View.OnClickListener {
                     : Math.min(accumY, maxVelocity);
         }
 
-        public float getXVelocity() {
+        float getXVelocity() {
             return mXVelocity;
         }
 
-        public float getYVelocity() {
+        float getYVelocity() {
             return mYVelocity;
         }
     }
 
     void setSubtypeOnSpaceKey(final InputMethodSubtype subtype) {
-        final APLKeyboard keyboard = (APLKeyboard) getKeyboard();
+//        final APLKeyboard keyboard = (APLKeyboard) getKeyboard();
 //        keyboard.setSpaceIcon(getResources().getDrawable(subtype.getIconResId()));
         invalidateAllKeys();
     }

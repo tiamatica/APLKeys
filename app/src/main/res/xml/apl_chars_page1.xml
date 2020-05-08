@@ -91,15 +91,16 @@
         <Key android:codes="8595" android:keyLabel="↓"/>
         <Key android:codes="8834" android:keyLabel="⊂"/>
         <Key android:codes="8835" android:keyLabel="⊃"/>
+        <Key android:codes="8838" android:keyLabel="⊆"/>
         <Key android:codes="9015" android:keyLabel="⌷"/>
         <Key android:codes="9035" android:keyLabel="⍋"/>
         <Key android:codes="9042" android:keyLabel="⍒"/>
 
         <Key android:codes="8710" android:keyLabel="∆"
-            android:horizontalGap="5%"
+            android:horizontalGap="0.5%"
             />
         <Key android:codes="175" android:keyLabel="¯"
-            android:horizontalGap="5%"
+            android:horizontalGap="0.5%"
             />
         <Key android:codes="9068" android:keyLabel="⍬"
         android:keyEdgeFlags="right"/>

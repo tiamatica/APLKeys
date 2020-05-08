@@ -76,8 +76,8 @@
     </Row>
     
     <Row>
-        <Key android:codes="122,8834" android:keyLabel="z"
-            android:popupCharacters="z⊂" android:popupKeyboard="@xml/popup_keyboard"
+        <Key android:codes="122,8834,8838" android:keyLabel="z"
+            android:popupCharacters="z⊂⊆" android:popupKeyboard="@xml/popup_keyboard"
             android:horizontalGap="15%p"
             android:keyEdgeFlags="left"/>
         <Key android:codes="120,8835" android:keyLabel="x"

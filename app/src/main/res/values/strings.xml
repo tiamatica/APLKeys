@@ -1,4 +1,4 @@
-<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+<resources>
     <string name="app_name">APL Keys</string>
     <string name="apl_keys_ime_label">APL Keys IME</string>
 
@@ -9,18 +9,21 @@
     <string name="label_prev_key">Prev</string>
     <string name="label_send_key">Send</string>
 
+    <!-- Hints for images/icons -->
+    <string name="hint_close_btn">Close popup</string>
+
     <!-- Labels for subtype -->
     <string name="label_subtype_generic">%s</string>
-    <string name="label_subtype_en_GB">English (GB)</string>
 
     <!-- Titles for ImePreference -->
     <string name="apl_keys_ime_settings">APL Keys IME Settings</string>
     <string name="language_selection_title">Input languages</string>
     <string name="select_language">Select input languages</string>
-    <string name="general_category">General</string>
 
     <string name="pref_full_qwerty">Full keyboard</string>
-    <string name="pref_full_qwerty_summ">Use full sized qwerty keyboard in portrait mode</string>
+    <string name="pref_full_qwerty_summary">Use full sized qwerty keyboard in portrait mode</string>
+    <string name="pref_show_preview">Show preview</string>
+    <string name="pref_show_preview_summary">Show preview of key while pressed</string>
 
     <!-- APLPad settings -->
     <string name="aplpad_name">APL Pad</string>
@@ -38,9 +41,5 @@
     <string-array name="pref_fontName_values">
         <item>@string/font_fixed</item>
         <item>@string/font_prop</item>
-    </string-array>
-    <string-array name="pref_fontSize_entries">
-        <item>APL385 - Fixed width font</item>
-        <item>APL333 - Proportional font</item>
     </string-array>
 </resources>

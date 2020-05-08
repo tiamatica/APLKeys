@@ -14,11 +14,6 @@
  * limitations under the License.
  */
 
-/**
- * This is a part of the inputmethod-common static Java library.
- * The original source code can be found at frameworks/opt/inputmethodcommon of Android Open Source
- * Project.
- */
 
 package com.android.inputmethodcommon;
 
@@ -28,6 +23,9 @@ import android.os.Bundle;
 import android.preference.PreferenceFragment;
 
 /**
+ * This is a part of the inputmethod-common static Java library.
+ * The original source code can be found at frameworks/opt/inputmethodcommon of Android Open Source
+ * Project.
  * This is a helper class for an IME's settings preference fragment. It's recommended for every
  * IME to have its own settings preference fragment which inherits this class.
  */
